@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -24,7 +24,9 @@ jobs:
         run: |
           cat finanzplaner-src/part1.b64 finanzplaner-src/part2.b64 finanzplaner-src/part3.b64 finanzplaner-src/part4.b64 | base64 -d > /tmp/finanzplaner.zip
           unzip -q /tmp/finanzplaner.zip -d /tmp/finanzplaner
-          echo "PROJECT_DIR=/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0" >> "$GITHUB_ENV"
+          PROJECT_DIR=/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0
+          sed -i '23s/})}}$/})}})/' "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
       - name: Build debug APK
         run: cd "$PROJECT_DIR" && gradle assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
