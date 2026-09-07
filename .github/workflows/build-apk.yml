@@ -6,6 +6,7 @@ on:
     branches: [ finanzplaner-native ]
     paths:
       - 'finanzplaner-src/**'
+      - 'finanzplaner-patch-v13/**'
       - '.github/workflows/build-apk.yml'
 
 jobs:
@@ -24,12 +25,21 @@ jobs:
         run: |
           cat finanzplaner-src/part1.b64 finanzplaner-src/part2.b64 finanzplaner-src/part3.b64 finanzplaner-src/part4.b64 | base64 -d > /tmp/finanzplaner.zip
           unzip -q /tmp/finanzplaner.zip -d /tmp/finanzplaner
-          PROJECT_DIR=/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0
-          sed -i '23s/})}}$/})}})/' "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+          echo "PROJECT_DIR=/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0" >> "$GITHUB_ENV"
+      - name: Apply native v1.3 patch
+        run: |
+          cat finanzplaner-patch-v13/MainActivity.part1.txt \
+              finanzplaner-patch-v13/MainActivity.part2.txt \
+              finanzplaner-patch-v13/MainActivity.part3.txt \
+              finanzplaner-patch-v13/MainActivity.part4.txt \
+              > "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/MainActivity.kt"
+          cp finanzplaner-patch-v13/Models.kt "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Models.kt"
+          cp finanzplaner-patch-v13/Store.kt "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
+          sed -i 's/versionCode = 1/versionCode = 13/' "$PROJECT_DIR/app/build.gradle.kts"
+          sed -i 's/versionName = "1.0"/versionName = "1.3-native"/' "$PROJECT_DIR/app/build.gradle.kts"
       - name: Build debug APK
         run: cd "$PROJECT_DIR" && gradle assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: WRCH-Finanzplaner-debug-apk
+          name: WRCH-Finanzplaner-native-v1.3-apk
           path: /tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0/app/build/outputs/apk/debug/app-debug.apk
