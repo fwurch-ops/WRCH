@@ -1,0 +1,43 @@
+hen(t){Tab.HOME->"Home";Tab.FIXED->"Fixkosten";Tab.BUDGETS->"Budgets";Tab.SAVINGS->"Spartöpfe";Tab.MORE->"Mehr"})})}}}
+        ){pad->Column(Modifier.padding(pad).padding(horizontal=14.dp).fillMaxSize()){MonthBar(ym,{ym=ym.minusMonths(1)},{ym=ym.plusMonths(1)},month().closed)
+            when(tab){
+                Tab.HOME->HomeScreen(month(),incomeTotal(),fixedReserved(),allocated(),actualBank(),cash(),available(),data.budgets,::spent,
+                    onIncome={if(locked())message="Monat ist abgeschlossen." else dialog=incomeDialog(null,ym){inc->month().income+=inc;persist()}},
+                    onCash={if(locked())message="Monat ist abgeschlossen." else dialog=amountDialog("Bargeld abheben","Betrag"){a->month().transfers+=Transfer(amount=a,date=dateForMonth());persist()}},onReceipt=::scan)
+                Tab.FIXED->FixedScreen(data,::monthlyReserve,ym,locked(),
+                    addCat={dialog=categoryDialog("Fixkosten-Kategorie",null){n,ic,col->data.fixed+=FixedCategory(name=n,icon=ic,color=col);persist()}},
+                    editCat={c->dialog=categoryDialog("Kategorie bearbeiten",Triple(c.name,c.icon,c.color)){n,ic,col->c.name=n;c.icon=ic;c.color=col;persist()}},
+                    delCat={c->if(c.items.isEmpty()){data.fixed.remove(c);persist()}else message="Die Kategorie enthält noch Posten."},
+                    addItem={c->dialog=fixedDialog(null,ym){v->c.items+=v;persist()}},
+                    editItem={c,x->dialog=fixedDialog(x,ym){v->x.name=v.name;x.amount=v.amount;x.startDate=v.startDate;x.frequency=v.frequency;persist()}},
+                    delItem={c,x->c.items.remove(x);persist()})
+                Tab.BUDGETS->BudgetScreen(data,month(),::spent,locked(),available(),
+                    add={dialog=categoryDialog("Budgettopf erstellen",null){n,ic,col->data.budgets+=BudgetCategory(name=n,icon=ic,color=col);persist()}},
+                    edit={b->dialog=categoryDialog("Budgettopf bearbeiten",Triple(b.name,b.icon,b.color)){n,ic,col->b.name=n;b.icon=ic;b.color=col;persist()}},
+                    delete={b->if(spent(b.id)==0.0&&(month().allocations[b.id]?:0.0)==0.0){data.budgets.remove(b);persist()}else message="Dieser Budgettopf wird im Monat bereits verwendet."},
+                    allocate={b->dialog=amountDialog("Budget zuweisen","Betrag",month().allocations[b.id]?:0.0){a->val old=month().allocations[b.id]?:0.0;if(a<=available()+old){month().allocations[b.id]=a;persist()}else message="Nach Fixkosten ist dafür nicht genug Geld verfügbar."}},
+                    expense={b->dialog=expenseDialog(b.name,dateForMonth()){a,src,note->month().expenses+=Expense(budgetId=b.id,amount=a,date=dateForMonth(),source=src,note=note);persist()}})
+                Tab.SAVINGS->SavingsScreen(data,::savingBalance,locked(),
+                    add={dialog=savingDialog(null){n,ic,col,p->data.savings+=SavingPot(name=n,icon=ic,color=col,percent=p);persist()}},
+                    edit={s->dialog=savingDialog(s){n,ic,col,p->s.name=n;s.icon=ic;s.color=col;s.percent=p;persist()}},
+                    delete={s->if(savingBalance(s.id)==0.0){data.savings.remove(s);persist()}else message="Spartopf hat noch einen Bestand."},
+                    move={s,dir->dialog=amountDialog(if(dir>0)"In ${s.name} einzahlen" else "Aus ${s.name} entnehmen","Betrag"){a->val valA=if(dir>0)a else -minOf(a,savingBalance(s.id));month().savingMoves+=SavingMove(savingId=s.id,amount=valA,date=dateForMonth(),note=if(dir>0)"Einzahlung" else "Entnahme");persist()}})
+                Tab.MORE->MoreScreen(month(),data,ym,locked(),
+                    opening={dialog=amountDialog("Startsaldo Girokonto","Kontostand am Monatsanfang",month().openingBalance){a->month().openingBalance=a;persist()}},
+                    incomeEdit={x->dialog=incomeDialog(x,ym){v->x.amount=v.amount;x.note=v.note;x.date=v.date;x.recurring=v.recurring;persist()}},
+                    incomeDelete={x->month().income.remove(x);persist()},
+                    close={val rest=data.budgets.sumOf{b->max(0.0,(month().allocations[b.id]?:0.0)-spent(b.id))};val sum=data.savings.sumOf{it.percent};if(sum!=100){message="Die Sparprozente ergeben $sum %. Sie müssen zusammen 100 % ergeben."}else{data.savings.forEach{s->val a=rest*s.percent/100.0;if(a>0)month().savingMoves+=SavingMove(savingId=s.id,amount=a,date=ym.atEndOfMonth().toString(),note="Monatsabschluss")};month().archive=ArchiveSnapshot(incomeTotal(),fixedReserved(),month().expenses.sumOf{it.amount},rest,"${data.budgets.size} Budgettöpfe · ${data.fixed.sumOf{it.items.size}} Fixkosten");month().closed=true;month().closedAt=System.currentTimeMillis();persist();message="Monat wurde abgeschlossen und archiviert."}})
+            }
+        }}
+    }
+    dialog?.let{DialogHost(it){dialog=null}}
+    receiptDraft?.let{draft->ReceiptDialog(draft,data.budgets,{merchant,a,bid,src->month().expenses+=Expense(budgetId=bid,amount=a,date=dateForMonth(),source=src,note="$merchant · Kassenbon");persist();receiptDraft=null},{receiptDraft=null})}
+    message?.let{AlertDialog(onDismissRequest={message=null},confirmButton={TextButton({message=null}){Text("OK")}},title={Text("WRCH Finanzplaner")},text={Text(it)})}
+}
+
+data class DialogSpec(val title:String,val content:@Composable ((()->Unit))->Unit)
+@Composable fun DialogHost(spec:DialogSpec,onDismiss:()->Unit){spec.content(onDismiss)}
+
+fun amountDialog(title:String,label:String,initial:Double?=null,onSave:(Double)->Unit)=DialogSpec(title){dismiss->var v by remember{mutableStateOf(initial?.takeIf{it!=0.0}?.toString()?:"")};AlertDialog(onDismissRequest=dismiss,title={Text(title)},text={MoneyField(v,{v=it},label)},confirmButton={Button({onSave(v.replace(',','.').toDoubleOrNull()?:0.0);dismiss()}){Text("Speichern")}},dismissButton={TextButton(dismiss){Text("Abbrechen")}})}
+fun incomeDialog(x:Income?,ym:YearMonth,onSave:(Income)->Unit)=DialogSpec(if(x==null)"Einnahme erfassen" else "Einnahme bearbeiten"){dismiss->var amount by remember{mutableStateOf(x?.amount?.toString()?:"")};var note by remember{mutableStateOf(x?.note?:"")};var date by remember{mutableStateOf(x?.date?:ym.atDay(minOf(LocalDate.now().dayOfMonth,ym.lengthOfMonth())).toString())};var recurring by remember{mutableStateOf(x?.recurring?:false)};AlertDialog(onDismissRequest=dismiss,title={Text(if(x==null)"Einnahme erfassen" else "Einnahme bearbeiten")},text={Column(verticalArrangement=Arrangement.spacedBy(8.dp)){MoneyField(amount,{amount=it},"Betrag");OutlinedTextField(note,{note=it},label={Text("Beschreibung")});OutlinedTextField(date,{date=it},label={Text("Datum YYYY-MM-DD")});Row(verticalAlignment=Alignment.CenterVertically){Checkbox(recurring,{recurring=it});Text("Monatlich wiederkehrend")}}},confirmButton={Button({onSave(Income(id=x?.id?:id(),amount=amount.replace(',','.').toDoubleOrNull()?:0.0,date=runCatching{LocalDate.parse(date).toString()}.getOrDefault(ym.atDay(1).toString()),note=note,recurring=recurring,templateId=x?.templateId));dismiss()}){Text("Speichern")}},dismissButton={TextButton(dismiss){Text("Abbrechen")}})}
+fun fixedDialog(x:FixedItem?,ym:YearMonth,onSave:(FixedItem)->Unit)=DialogSpec(if(x==null)"Fixkosten hinzufügen" else "Fixkosten bearbeiten"){dismiss->var name by remember{mutableStateOf(x?.name?:"")};var amount by remember{mutableStateOf(x?.amount?.toString()?:"")};var date by remember{mutableStateOf(x?.startDate?:ym.atDay(minOf(LocalDate.now().dayOfMonth,ym.lengthOfMonth())).toString())};var f by remember{mutableStateOf(x?.frequency?:Frequency.MONTHLY)};var exp by remember{mutableStateOf(false)};AlertDialog(onDismissRequest=dismiss,title={Text(if(x==null)"Fixkosten hinzufügen" else "Fixkosten bearbeiten")},text={Column(verticalArrangement=Arrangement.spacedBy(8.dp)){OutlinedTextField(name,{name=it},label={Text("Name")});MoneyField(amount,{amount=it},"Betrag");OutlinedTextField(date,{date=it},label={Text("Erste / nächste Abbuchung")});Box{OutlinedButton({exp=true}){Text(freqLabel(f))};DropdownMenu(exp,{exp=false}){Frequ
