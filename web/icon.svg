@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">WRCH App Icon</title>
+  <desc id="desc">Grünes WRCH W mit Blatt-Akzent auf hellem Hintergrund.</desc>
+  <rect width="512" height="512" rx="112" fill="#F4F8F3"/>
+  <path d="M104 154l57 204 55-139 40 139 60-204h58l-87 244h-57l-39-123-48 123h-57L46 154h58z" fill="#2F6F4E"/>
+  <path d="M329 115c42-34 94-28 116-16-5 50-38 91-94 98-13 2-25 0-35-3 8-31 21-54 50-73-31 11-51 29-67 54-2-21 8-43 30-60z" fill="#66A06F"/>
+</svg>
