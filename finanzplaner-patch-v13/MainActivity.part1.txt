@@ -1,0 +1,112 @@
+package de.wrch.finanzplaner
+
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import java.io.File
+import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
+import kotlin.math.max
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent { WRCHApp(Store(this)) }
+    }
+}
+
+private val Green = Color(0xFF4F7F63)
+private val Bg = Color(0xFFF4F7F2)
+private val Soft = Color(0xFFE7F0E8)
+private val DarkBg = Color(0xFF121613)
+private val DarkSurface = Color(0xFF1D241F)
+private val money = NumberFormat.getCurrencyInstance(Locale.GERMANY)
+private val palette = listOf(0xFF4F7F63,0xFFC87B62,0xFFD5AA48,0xFF6C87B8,0xFFA36F9F,0xFF6D9F9B,0xFFA87655,0xFF7E8B62,0xFFB76666,0xFF5F8F72)
+private val emojis = listOf("🛒","⛽","🍽️","🎉","👕","🧒","✂️","🛍️","🎁","💶","🏠","🛡️","📱","📺","🏋️","💳","👨‍👩‍👧","🌱","🛟","✈️","🚗","💰","📌","🏖️","🐷")
+
+enum class Tab { HOME, FIXED, BUDGETS, SAVINGS, MORE }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun WRCHApp(store: Store) {
+    val context = LocalContext.current
+    var data by remember { mutableStateOf(store.load()) }
+    var tab by remember { mutableStateOf(Tab.HOME) }
+    var ym by remember { mutableStateOf(YearMonth.now()) }
+    var dialog by remember { mutableStateOf<DialogSpec?>(null) }
+    var receiptDraft by remember { mutableStateOf<Triple<String,String,String>?>(null) }
+    var message by remember { mutableStateOf<String?>(null) }
+
+    fun month(): MonthData {
+        val k = monthKey(ym)
+        if (!data.months.containsKey(k)) {
+            val md = MonthData()
+            val prev = data.months[monthKey(ym.minusMonths(1))]
+            prev?.income?.filter { it.recurring }?.forEach { x ->
+                val day = runCatching { LocalDate.parse(x.date).dayOfMonth }.getOrDefault(1)
+                md.income += x.copy(id=id(), date=ym.atDay(minOf(day,ym.lengthOfMonth())).toString(), templateId=x.templateId ?: x.id)
+            }
+            data.months[k] = md
+            store.save(data)
+        }
+        return data.months[k]!!
+    }
+    fun persist() { store.save(data); data = data.copy() }
+    fun locked() = month().closed
+    fun fixedValue(x:FixedItem):FixedOverride = x.overrides[monthKey(ym)] ?: FixedOverride(x.name,x.amount,x.startDate,x.frequency)
+    fun monthlyReserve(x: FixedItem):Double { val v=fixedValue(x); return when(v.frequency){Frequency.MONTHLY->v.amount;Frequency.QUARTERLY->v.amount/3;Frequency.YEARLY->v.amount/12;Frequency.ONCE->if(YearMonth.from(LocalDate.parse(v.startDate))==ym)v.amount else 0.0} }
+    fun occurs(x: FixedItem):Boolean { val v=fixedValue(x); val s=YearMonth.from(LocalDate.parse(v.startDate)); val diff=(ym.year-s.year)*12+ym.monthValue-s.monthValue; return when(v.frequency){Frequency.MONTHLY->diff>=0;Frequency.QUARTERLY->diff>=0&&diff%3==0;Frequency.YEARLY->diff>=0&&diff%12==0;Frequency.ONCE->ym==s} }
+    fun fixedReserved()=data.fixed.sumOf{c->c.items.sumOf(::monthlyReserve)}
+    fun incomeTotal()=month().income.sumOf{it.amount}
+    fun allocated()=month().allocations.values.sum()
+    fun spent(id:String)=month().expenses.filter{it.budgetId==id}.sumOf{it.amount}
+    fun available()=incomeTotal()-fixedReserved()-allocated()
+    fun savingBalance(id:String)=data.months.filterKeys{it<=monthKey(ym)}.values.flatMap{it.savingMoves}.filter{it.savingId==id}.sumOf{it.amount}
+    fun dateForMonth(day:Int=LocalDate.now().dayOfMonth)=ym.atDay(minOf(day,ym.lengthOfMonth())).toString()
+    fun actualBank():Double { val today=if(ym==YearMonth.now()) LocalDate.now() else ym.atEndOfMonth(); val inc=month().income.filter{LocalDate.parse(it.date)<=today}.sumOf{it.amount}; val fx=data.fixed.flatMap{it.items}.filter(::occurs).filter{ val v=fixedValue(it); val d=ym.atDay(minOf(LocalDate.parse(v.startDate).dayOfMonth,ym.lengthOfMonth())); d<=today }.sumOf{fixedValue(it).amount}; val ex=month().expenses.filter{it.source==Source.BANK&&LocalDate.parse(it.date)<=today}.sumOf{it.amount}; val tr=month().transfers.filter{LocalDate.parse(it.date)<=today}.sumOf{it.amount}; return month().openingBalance+inc-fx-ex-tr }
+    fun cash()=month().transfers.sumOf{it.amount}-month().expenses.filter{it.source==Source.CASH}.sumOf{it.amount}
+
+    val receiptUri=remember{ mutableStateOf<Uri?>(null) }
+    val takePicture=rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()){ok->if(ok) receiptUri.value?.let{uri->
+        TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS).process(InputImage.fromFilePath(context,uri)).addOnSuccessListener{r->
+            val lines=r.text.lines().filter{it.isNotBlank()}; val merchant=lines.firstOrNull()?.take(35)?:"Kassenbon"; val dr=Regex("""\b(\d{1,2}[./-]\d{1,2}[./-]\d{2,4})\b"""); val fd=lines.firstNotNullOfOrNull{dr.find(it)?.value}?:dateForMonth(); val nums=Regex("""(\d{1,4}[,.]\d{2})""").findAll(r.text).mapNotNull{it.value.replace(',','.').toDoubleOrNull()}.toList(); receiptDraft=Triple(merchant,nums.maxOrNull()?.toString()?:"",fd)
+        }
+    }}
+    fun scan(){ if(locked()){message="Abgeschlossene Monate können nicht mehr verändert werden.";return}; val dir=File(context.cacheDir,"images").apply{mkdirs()}; val f=File(dir,"receipt_${System.currentTimeMillis()}.jpg"); val u=FileProvider.getUriForFile(context,"${context.packageName}.fileprovider",f); receiptUri.value=u; takePicture.launch(u) }
+
+    val scheme=if(data.darkMode) darkColorScheme(primary=Color(0xFF8AB89A),background=DarkBg,surface=DarkSurface) else lightColorScheme(primary=Green,background=Bg,surface=Color.White)
+    MaterialTheme(colorScheme=scheme){
+        Scaffold(modifier=Modifier.fillMaxSize(),containerColor=MaterialTheme.colorScheme.background,contentWindowInsets=WindowInsets.safeDrawing,
+            topBar={TopAppBar(title={Column{Text("W R C H",color=MaterialTheme.colorScheme.primary,fontWeight=FontWeight.Bold);Text("Finanzplaner",fontWeight=FontWeight.Bold)}},actions={IconButton({data.darkMode=!data.darkMode;persist()}){Icon(if(data.darkMode) Icons.Default.LightMode else Icons.Default.DarkMode,null)}},colors=TopAppBarDefaults.topAppBarColors(containerColor=MaterialTheme.colorScheme.background))},
+            bottomBar={NavigationBar{listOf(Tab.HOME to Icons.Default.Home,Tab.FIXED to Icons.Default.ReceiptLong,Tab.BUDGETS to Icons.Default.AccountBalanceWallet,Tab.SAVINGS to Icons.Default.Savings,Tab.MORE to Icons.Default.MoreHoriz).forEach{(t,ic)->NavigationBarItem(selected=tab==t,onClick={tab=t},icon={Icon(ic,null)},label={Text(w
