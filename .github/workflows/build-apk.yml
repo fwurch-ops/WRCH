@@ -35,6 +35,8 @@ jobs:
               > "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/MainActivity.kt"
           cp finanzplaner-patch-v13/Models.kt "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Models.kt"
           cp finanzplaner-patch-v13/Store.kt "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
+          sed -i '25s/})}}$/})}})/' "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
+          printf '\n}\n' >> "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/MainActivity.kt"
           sed -i 's/versionCode = 1/versionCode = 13/' "$PROJECT_DIR/app/build.gradle.kts"
           sed -i 's/versionName = "1.0"/versionName = "1.3-native"/' "$PROJECT_DIR/app/build.gradle.kts"
       - name: Build debug APK
