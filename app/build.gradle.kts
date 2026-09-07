@@ -8,11 +8,11 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "de.wrch.health"
+        applicationId = "de.wrch.health.test"
         minSdk = 28
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.3"
+        versionCode = 4
+        versionName = "0.4-test"
     }
 
     compileOptions {
