@@ -26,7 +26,7 @@ jobs:
           cat finanzplaner-src/part1.b64 finanzplaner-src/part2.b64 finanzplaner-src/part3.b64 finanzplaner-src/part4.b64 | base64 -d > /tmp/finanzplaner.zip
           unzip -q /tmp/finanzplaner.zip -d /tmp/finanzplaner
           echo "PROJECT_DIR=/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0" >> "$GITHUB_ENV"
-      - name: Apply native v1.3 patch
+      - name: Apply native v1.4 patch
         run: |
           cat finanzplaner-patch-v13/MainActivity.part1.txt \
               finanzplaner-patch-v13/MainActivity.part2.txt \
@@ -43,16 +43,106 @@ jobs:
               i=s.index(sig)
               j=s.find('\n',i)
               s=s[:j]+'}'+s[j:]
+
+          start=s.index('@Composable fun FixedScreen')
+          end=s.index('@Composable fun Donut', start)
+          fixed='''@Composable
+          fun FixedScreen(
+              d: AppData,
+              reserve: (FixedItem) -> Double,
+              ym: YearMonth,
+              locked: Boolean,
+              addCat: () -> Unit,
+              editCat: (FixedCategory) -> Unit,
+              delCat: (FixedCategory) -> Unit,
+              addItem: (FixedCategory) -> Unit,
+              editItem: (FixedCategory, FixedItem) -> Unit,
+              delItem: (FixedCategory, FixedItem) -> Unit
+          ) {
+              LazyColumn(
+                  verticalArrangement = Arrangement.spacedBy(10.dp),
+                  contentPadding = PaddingValues(bottom = 16.dp)
+              ) {
+                  item {
+                      Row(
+                          Modifier.fillMaxWidth(),
+                          horizontalArrangement = Arrangement.SpaceBetween,
+                          verticalAlignment = Alignment.CenterVertically
+                      ) {
+                          Column {
+                              Text("Fixkosten", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                              Text("Monatsreserve ${money.format(d.fixed.sumOf { it.items.sumOf(reserve) })}")
+                          }
+                          FilledTonalButton(addCat, enabled = !locked) { Text("+ Kategorie") }
+                      }
+                  }
+                  item { Donut(d) }
+                  items(d.fixed) { c ->
+                      var open by remember(c.id) { mutableStateOf(true) }
+                      Card {
+                          Column(Modifier.padding(14.dp)) {
+                              Row(verticalAlignment = Alignment.CenterVertically) {
+                                  Surface(
+                                      shape = RoundedCornerShape(50),
+                                      color = Color(c.color),
+                                      modifier = Modifier.size(12.dp)
+                                  ) {}
+                                  Spacer(Modifier.width(8.dp))
+                                  Text("${c.icon} ${c.name}", fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                                  Text(money.format(c.items.sumOf(reserve)), fontWeight = FontWeight.Bold)
+                                  IconButton({ open = !open }) {
+                                      Icon(if (open) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null)
+                                  }
+                              }
+                              if (open) {
+                                  if (c.items.isEmpty()) {
+                                      Text("Noch keine Positionen.", style = MaterialTheme.typography.bodySmall)
+                                  }
+                                  c.items.forEach { x ->
+                                      Row(
+                                          Modifier.fillMaxWidth().padding(vertical = 5.dp),
+                                          verticalAlignment = Alignment.CenterVertically
+                                      ) {
+                                          Column(Modifier.weight(1f)) {
+                                              Text(x.name)
+                                              Text(
+                                                  "${money.format(x.amount)} · ${freqLabel(x.frequency)} · ≈ ${money.format(reserve(x))}/Monat",
+                                                  style = MaterialTheme.typography.bodySmall
+                                              )
+                                          }
+                                          IconButton({ editItem(c, x) }, enabled = !locked) { Icon(Icons.Default.Edit, null) }
+                                          IconButton({ delItem(c, x) }, enabled = !locked) { Icon(Icons.Default.Delete, null) }
+                                      }
+                                  }
+                                  FilledTonalButton(
+                                      onClick = { addItem(c) },
+                                      enabled = !locked,
+                                      modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                                  ) { Text("+ Fixkosten-Posten hinzufügen") }
+                                  Row {
+                                      TextButton({ editCat(c) }, enabled = !locked) { Text("Kategorie bearbeiten") }
+                                      TextButton({ delCat(c) }, enabled = !locked) { Text("Löschen") }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+
+          '''
+          s=s[:start]+fixed+s[end:]
           p.write_text(s)
+
           sp=Path('/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0/app/src/main/java/de/wrch/finanzplaner/Store.kt')
           t=sp.read_text().replace('        })}}\n    }\n\n    private fun decode','        })}})\n    }\n\n    private fun decode',1)
           sp.write_text(t)
           PY
-          sed -i 's/versionCode = 1/versionCode = 13/' "$PROJECT_DIR/app/build.gradle.kts"
-          sed -i 's/versionName = "1.0"/versionName = "1.3-native"/' "$PROJECT_DIR/app/build.gradle.kts"
+          sed -i 's/versionCode = 1/versionCode = 14/' "$PROJECT_DIR/app/build.gradle.kts"
+          sed -i 's/versionName = "1.0"/versionName = "1.4-native"/' "$PROJECT_DIR/app/build.gradle.kts"
       - name: Build debug APK
         run: cd "$PROJECT_DIR" && gradle assembleDebug --stacktrace
       - uses: actions/upload-artifact@v4
         with:
-          name: WRCH-Finanzplaner-native-v1.3-apk
+          name: WRCH-Finanzplaner-native-v1.4-apk
           path: /tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0/app/build/outputs/apk/debug/app-debug.apk
