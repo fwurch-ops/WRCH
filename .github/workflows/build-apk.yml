@@ -35,8 +35,19 @@ jobs:
               > "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/MainActivity.kt"
           cp finanzplaner-patch-v13/Models.kt "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Models.kt"
           cp finanzplaner-patch-v13/Store.kt "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
-          sed -i '25s/})}}$/})}})/' "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/Store.kt"
-          printf '\n}\n' >> "$PROJECT_DIR/app/src/main/java/de/wrch/finanzplaner/MainActivity.kt"
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0/app/src/main/java/de/wrch/finanzplaner/MainActivity.kt')
+          s=p.read_text()
+          for sig in ['@Composable fun FixedScreen','@Composable fun BudgetScreen','@Composable fun SavingsScreen']:
+              i=s.index(sig)
+              j=s.find('\n',i)
+              s=s[:j]+'}'+s[j:]
+          p.write_text(s)
+          sp=Path('/tmp/finanzplaner/WRCH_Finanzplaner_Android_v1.0/app/src/main/java/de/wrch/finanzplaner/Store.kt')
+          t=sp.read_text().replace('        })}}\n    }\n\n    private fun decode','        })}})\n    }\n\n    private fun decode',1)
+          sp.write_text(t)
+          PY
           sed -i 's/versionCode = 1/versionCode = 13/' "$PROJECT_DIR/app/build.gradle.kts"
           sed -i 's/versionName = "1.0"/versionName = "1.3-native"/' "$PROJECT_DIR/app/build.gradle.kts"
       - name: Build debug APK
