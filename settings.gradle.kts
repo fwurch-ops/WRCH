@@ -7,3 +7,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "WRCHHealth"
 include(":app")
+include(":diagnostic")
