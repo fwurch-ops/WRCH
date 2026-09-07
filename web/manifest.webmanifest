@@ -1,0 +1,20 @@
+{
+  "name": "WRCH",
+  "short_name": "WRCH",
+  "description": "Dein Weg. Gemeinsam. Ernährung, Bewegung, Training, Tribes und Challenges in einer App.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F4F8F3",
+  "theme_color": "#2F6F4E",
+  "orientation": "portrait-primary",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
