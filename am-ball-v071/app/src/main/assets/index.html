@@ -1,0 +1,800 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Amateurfußball am Ball · Datenzentrale · 60 Begegnungen v0.71</title><style>
+:root{font-family:system-ui,sans-serif;color:#172b32;background:#f0f4f3}*{box-sizing:border-box}body{margin:0}header{background:#102e32;color:white;padding:32px 20px}header div,main{max-width:1050px;margin:auto}h1{font-size:clamp(27px,6vw,42px);margin:8px 0}h2{font-size:22px}header p{color:#c1d3ce}.eyebrow{color:#9be1b8;font-size:12px;letter-spacing:3px}main{padding:20px 14px 50px}button,select,input,.upload{font:inherit;min-height:46px;border:1px solid #cbd7d2;border-radius:10px;background:white;color:#172b32;padding:11px 14px}button,.upload{cursor:pointer}button:hover{background:#e7f5ec}nav,.controls,.actions{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}nav button{flex:1}.active{background:#154e43!important;color:white}select{flex:1;min-width:130px}.controls input{flex:2;min-width:130px}.note{padding:14px;background:#e0ece7;border-radius:12px;font-size:13px;line-height:1.6}.row{width:100%;display:grid;grid-template-columns:32px 1fr auto;gap:12px;text-align:left;align-items:center;margin:8px 0;padding:16px}.rank{color:#758a82;font-size:14px}small{display:block;color:#647970;font-size:12px;margin-top:5px}.row b{font-size:22px;color:#155e48}.empty{background:white;padding:25px;border-radius:12px;line-height:1.7}.game{display:block;width:100%;text-align:left;margin:8px 0}.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}.actions .upload,.actions #export{display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:58px;padding:16px 10px;text-align:center}.upload{background:#155e48;color:white}#import{display:none}#status{font-size:12px;color:#647970}dialog{border:0;border-radius:18px;max-width:720px;width:94%;max-height:90vh;padding:22px}dialog::backdrop{background:#102e32aa}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}#close{float:right}#summary{font-size:12px;line-height:1.65;white-space:pre-line}#custom{display:flex;gap:8px}#custom[hidden]{display:none}#minimumWrap[hidden]{display:none!important}@media(max-width:500px){nav button{flex:1 0 40%;font-size:14px}.row{padding:13px 10px;gap:7px}.row strong{font-size:14px}header{padding:24px 18px}}
+.competition-picker{border:1px solid #cbd9d2;border-radius:12px;padding:14px;margin:12px 0;min-width:0;flex-basis:100%;box-sizing:border-box}.competition-picker legend{font-weight:700}.competition-options{display:flex;flex-wrap:wrap;gap:12px 22px}.competition-options label{display:flex;align-items:center;gap:7px}.competition-options input{width:20px;height:20px;accent-color:#237b58}.competition-presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.competition-presets button{padding:8px 12px}.competition-picker p{margin-bottom:0} .competition-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.competition-options button{min-width:0;min-height:60px;padding:14px 8px;font-size:14px;font-weight:600;line-height:1.35;text-align:center}.competition-options button[aria-pressed="true"]{background:#154e43;color:#fff;border-color:#154e43;box-shadow:inset 0 0 0 1px #154e43}.competition-options .empty-competitions{grid-column:1/-1;font-size:13px;color:#647970;padding:12px 0}.competition-options button:focus-visible{outline:3px solid #76c995;outline-offset:3px}.competition-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;width:100%}.competition-presets button{display:flex;align-items:center;justify-content:center;min-width:0;min-height:54px;padding:12px 6px;text-align:center;font-size:14px}.season-period{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 12px}.season-period label{display:flex;flex-direction:column;gap:7px;font-size:13px;font-weight:600;color:#476358}.season-period select{width:100%;min-width:0;min-height:54px;font-size:15px;font-weight:400}#custom{margin:12px 0}#custom input{min-width:0;width:50%}.club-card{background:white;border:1px solid #d5e2dc;border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 3px 12px #102e3208}.club-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;border:0;padding:0;background:transparent;text-align:left}.club-heading strong{display:block;font-size:20px;margin:5px 0}.club-heading small{margin:0}.club-score{font-size:28px;font-weight:750;color:#155e48;text-align:right}.club-score small{font-weight:400;max-width:140px}.club-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;border-top:1px solid #e0e9e4;padding-top:14px;margin-top:14px}.club-kpis span,.club-kpis button{text-align:center;font-size:12px;padding:8px 3px;min-height:0}.club-kpis b{display:block;font-size:18px;color:#155e48}.club-kpis button{border:0;background:#edf5f0}.club-team-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}.club-team-chips button{font-size:12px;padding:8px;min-height:36px}.club-scope{font-size:12px;color:#647970;line-height:1.6}.club-unlinked{padding:14px;font-size:13px}.club-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.club-detail-grid>div{background:#edf5f0;border-radius:10px;padding:12px}.club-detail-grid strong{font-size:22px}.club-person{padding:12px 0;border-bottom:1px solid #e0e9e4}.abbreviation{display:inline-block;vertical-align:middle;background:#e0eee6;color:#155e48;border:1px solid #c9ded1;border-radius:5px;padding:2px 6px;margin:2px 3px 2px 0;font-size:11px;font-weight:750;line-height:1.4;white-space:nowrap}.minimum-filter{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.minimum-filter input[type="checkbox"]{width:20px;height:20px;min-height:20px;accent-color:#155e48}.minimum-filter input[type="number"]{width:84px;min-height:42px;padding:8px;text-align:center;background:white}.stat-tiles{margin:16px 0 22px}.stat-tiles>div{border:1px solid #dbe8df}.stat-tiles small{margin:0 0 7px}.stat-tiles strong{display:block;font-size:24px;color:#155e48;overflow-wrap:anywhere}.detail-context{font-size:13px;color:#647970;line-height:1.6}#detailBody h4{margin-bottom:10px}.row.player-ranking{grid-template-columns:26px minmax(0,1fr) auto}.player-ranking .player-identity{min-width:0}.row.player-ranking strong{display:block;font-size:18px;line-height:1.35;overflow-wrap:anywhere}.player-ranking small:empty{display:none}.player-ranking .ranking-value{white-space:nowrap}@media(max-width:500px){.row.player-ranking strong{font-size:17px}.row.player-ranking{gap:8px}}
+.player-ranking .rank{grid-column:1;grid-row:1}.player-ranking .player-identity{grid-column:2;grid-row:1}.player-ranking .ranking-value{grid-column:3;grid-row:1}.ranking-kpis{grid-column:2 / 4;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:5px}.ranking-kpis>span{background:#edf5f0;border-radius:7px;padding:8px 3px;text-align:center;min-width:0}.ranking-kpis small{font-size:10px;line-height:1.3;margin:0 0 4px;overflow-wrap:anywhere}.row .ranking-kpis b{font-size:16px}@media(max-width:380px){.ranking-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.person-heading{display:flex;align-items:center;flex-wrap:wrap;gap:5px 9px}.person-heading strong{min-width:0}.person-codes{display:inline-flex;flex-wrap:wrap;gap:3px}.person-codes:empty{display:none}.ranking-kpis,.club-kpis,.club-detail-grid{align-items:stretch}.ranking-kpis>span,.club-kpis>span,.club-kpis>button,.stat-tiles>div{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:8px;height:100%;min-height:78px}.ranking-kpis small,.club-kpis small,.stat-tiles small{display:block;line-height:1.35;margin:0;text-align:inherit}.ranking-kpis b,.club-kpis b,.stat-tiles strong{display:block;margin-top:auto;line-height:1.2}.club-kpis>span,.club-kpis>button{background:#edf5f0;border-radius:7px;padding:10px 5px}.club-kpis small{font-size:11px}.club-kpis b{font-size:18px}.player-ranking{align-items:start}.player-ranking .rank,.player-ranking .ranking-value{align-self:start}.club-heading{align-items:flex-start}@media(max-width:380px){.club-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ranking-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:16px 0;align-items:stretch}.ranking-options[hidden]{display:none}.ranking-options #minimumWrap{margin:0;padding:10px;min-width:0;font-size:12px;gap:6px;align-content:center}.ranking-options #minimumCount{width:52px;min-width:0;flex:none;padding:6px;min-height:36px}.ranking-options #detailed{grid-column:2;min-height:60px;font-weight:650}.ranking-options #detailed[aria-pressed="true"]{background:#154e43;color:white;border-color:#154e43}.compact-rankings .ranking-kpis,.compact-rankings .club-kpis{display:none}.compact-rankings .club-team-chips{margin-top:10px}
+.ranking-options #minimumWrap[hidden]+#detailed{grid-column:1 / -1}.team-league{display:block;margin-top:4px;font-size:12px;line-height:1.45;color:#62766e;font-weight:400;letter-spacing:.1px}.club-inactive-section{margin:28px 0 12px;padding-top:14px;border-top:2px solid #dce9e1}.club-inactive-section h2{margin:3px 0 5px;font-size:19px;color:#173c30}.club-inactive-note{font-size:12px;line-height:1.55;color:#647970;margin:0 0 12px}.club-inactive-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:11px}.club-inactive-card{border:1px solid #d5e2dc;border-radius:14px;padding:13px 15px;text-align:left;min-height:92px;display:flex;flex-direction:column;align-items:flex-start;gap:7px;box-shadow:0 3px 12px #102e3208}.club-inactive-card strong{font-size:16px;color:#162f30}.club-inactive-card small{font-size:12px;color:#536a5f}.club-empty-info{background:#eef5f0;border:1px solid #d6e5dd;border-radius:12px;padding:16px;line-height:1.55;color:#28473b}.club-empty-info strong{display:block;margin-bottom:6px}
+.person-heading.codes-below{display:flex;flex-direction:column;align-items:flex-start;gap:5px}.person-heading.codes-below .person-codes{max-width:100%;flex-wrap:wrap}.person-heading.codes-below strong{max-width:100%}.recap-view{display:grid;gap:18px}.recap-heading{padding:25px;border-radius:17px;background:#143e35;color:#fff}.recap-heading h2{font-size:32px;margin:6px 0}.recap-heading p{margin:0 0 14px;color:#d5e8dc}.recap-eyebrow{font-size:10px;letter-spacing:2px;color:#afe1bf}.recap-tags{display:flex;flex-wrap:wrap;gap:7px}.recap-tags span{font-size:12px;padding:5px 9px;border-radius:7px;background:#ffffff15;border:1px solid #ffffff24}.recap-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}.recap-kpis>div{display:flex;flex-direction:column;justify-content:space-between;gap:13px;min-height:91px;padding:14px;background:#fff;border:1px solid #d8e5dd;border-radius:11px;min-width:0}.recap-kpis small{margin:0;line-height:1.35;overflow-wrap:anywhere;font-size:12px}.recap-kpis strong{color:#155e48;font-size:26px;line-height:1.1;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.recap-balances,.recap-district-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.recap-panel{background:#fff;border:1px solid #d8e5dd;border-radius:14px;padding:18px;min-width:0}.recap-panel h3{font-size:16px;margin:0 0 18px;overflow-wrap:anywhere}.recap-results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;text-align:center}.recap-results strong{display:block;font-size:28px;font-variant-numeric:tabular-nums}.recap-results small{font-size:10px;overflow-wrap:anywhere}.recap-results>div:first-child strong{color:#23764e}.recap-results>div:last-child strong{color:#a84b43}.recap-bar{display:flex;height:6px;gap:3px;margin:15px 0 19px;border-radius:4px;overflow:hidden;background:#edf2ee}.recap-bar .win{background:#2c8559}.recap-bar .draw{background:#a1afa7}.recap-bar .loss{background:#c47a70}.recap-panel .recap-kpis{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.recap-panel .recap-kpis>div{background:#f1f6f2;border:0;padding:10px 8px;min-height:78px}.recap-panel .recap-kpis strong{font-size:20px}.recap-panel .recap-kpis small{font-size:10px}.recap-districts>h3{margin:4px 0}.recap-caption{margin:4px 0 14px;color:#647970;font-size:12px}.recap-method,.recap-game-list{border:1px solid #d8e5dd;background:white;border-radius:12px;padding:15px;font-size:13px;line-height:1.6}.recap-method summary,.recap-game-list summary{cursor:pointer;font-weight:650}.recap-method p{color:#647970;margin-bottom:0}
+/* ReCap v0.70: Zeitraumbezogene Einzelstatistiken. */
+.recap-highlights{display:grid;gap:12px}
+.recap-highlight{background:#fff;border:1px solid #d8e5dd;border-radius:13px;overflow:hidden;min-width:0}
+.recap-highlight>summary{display:flex;align-items:center;gap:11px;padding:16px 17px;list-style:none;cursor:pointer;font-size:15px;font-weight:750;color:#183d32;user-select:none}
+.recap-highlight>summary::-webkit-details-marker{display:none}
+.recap-highlight>summary .recap-highlight-icon{display:inline-grid;place-items:center;background:#e9f3eb;color:#196747;border-radius:9px;min-width:36px;height:36px;font-size:19px}
+.recap-highlight>summary .recap-highlight-label{flex:1;min-width:0;line-height:1.3}
+.recap-highlight>summary .recap-highlight-count{background:#eaf3ed;color:#1d684b;border-radius:8px;padding:5px 9px;white-space:nowrap;font-size:11px;font-weight:650}
+.recap-highlight>summary .recap-highlight-chevron{color:#547265;font-size:19px;transform:rotate(0deg);transition:transform .14s}
+.recap-highlight[open]>summary{border-bottom:1px solid #e0eae3}
+.recap-highlight[open]>summary .recap-highlight-chevron{transform:rotate(90deg)}
+.recap-highlight-rows{padding:2px 15px 6px}
+.recap-highlight-row{display:flex;align-items:center;gap:11px;padding:12px 3px;min-width:0}
+.recap-highlight-row+.recap-highlight-row{border-top:1px solid #e8eee9}
+.recap-highlight-rank{flex:0 0 27px;color:#6a8577;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums}
+.recap-highlight-main{flex:1;min-width:0}
+.recap-highlight-main strong{display:block;color:#1e332a;font-weight:650;overflow-wrap:anywhere;font-size:13px;line-height:1.4}
+.recap-highlight-main small{display:block;color:#718478;font-size:11px;line-height:1.5;margin-top:3px}
+.recap-highlight-number{flex:0 0 auto;text-align:right;font-size:16px;font-variant-numeric:tabular-nums;font-weight:800;color:#175f45;white-space:nowrap}
+.recap-highlight-number small{display:block;font-size:10px;font-weight:500;color:#607969;margin-top:3px}
+.recap-highlight-empty{padding:16px;color:#62786c;font-size:13px}
+.recap-highlights-heading{margin:2px 0 0;font-size:17px;color:#21392e}
+.recap-highlights-description{margin:-7px 0 1px;color:#647970;font-size:12px;line-height:1.45}
+@media(max-width:450px){.recap-highlight>summary{padding:12px 11px;gap:7px;font-size:13px}.recap-highlight>summary .recap-highlight-icon{min-width:30px;height:30px;font-size:16px}.recap-highlight>summary .recap-highlight-count{font-size:10px;padding:4px 5px}.recap-highlight-row{gap:7px}.recap-highlight-rank{flex-basis:22px}.recap-highlight-main strong{font-size:12px}.recap-highlight-number{font-size:14px}}
+
+.recap-game-list{margin-top:18px}.recap-game-list summary span{float:right;padding:0 8px;background:#edf5f0;border-radius:6px;color:#155e48}.recap-game-list .game{font-size:13px;line-height:1.5}.recap-no-data{padding:22px;background:white;border:1px dashed #cbdace;border-radius:12px;color:#647970;font-size:13px}@media(max-width:650px){.recap-balances,.recap-district-grid{grid-template-columns:1fr}.recap-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.recap-heading{padding:20px}.recap-panel{padding:16px}}
+
+.recap-kpis .recap-appearances{display:flex;flex-direction:column;align-items:flex-start;text-align:left;background:#edf5ee;border:1px solid #90b69b;border-radius:12px;padding:12px;color:inherit;font:inherit;cursor:pointer;min-width:0}.recap-appearances small{font-size:12px;color:#52665b}.recap-panel .recap-appearances strong{font-size:20px;text-decoration:none;line-height:1.1;color:#155e48}.recap-appearances:focus-visible{outline:3px solid #246b45;outline-offset:2px}.recap-appearances:hover{background:#dfeddf}
+
+.recap-kpis .recap-appearances{justify-content:space-between;gap:13px;min-height:78px;padding:10px 8px;border-radius:11px}.recap-panel .recap-appearances small{font-size:10px;color:inherit}.club-team-chips{display:grid;grid-template-columns:minmax(0,1fr)}.club-team-chips>button{width:100%;min-width:0;box-sizing:border-box;text-align:left;white-space:normal;overflow-wrap:anywhere}
+
+[data-club-team]{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;box-sizing:border-box;text-align:left}.club-team-name{min-width:0;overflow-wrap:anywhere;flex:1}.club-team-meta{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-shrink:0;margin-left:auto;text-align:right}.club-team-category{font-size:12px}.club-team-meta .abbreviation{margin:0}@media(max-width:380px){[data-club-team]{gap:8px}.club-team-meta{gap:5px}.club-team-category{font-size:11px}}
+
+.club-detail-grid>.team-players-tile{display:flex;flex-direction:column;align-items:stretch;justify-content:space-between;gap:8px;min-height:78px;background:#edf5f0;border:1px solid #90b69b;border-radius:10px;padding:12px;text-align:left;font:inherit;cursor:pointer}.team-players-tile strong{font-size:24px;color:#155e48;margin-top:auto}.team-players-tile:hover{background:#dfeddf}.team-players-tile:focus-visible{outline:3px solid #246b45;outline-offset:2px}
+
+.team-profile-stats{display:grid;gap:10px;margin:16px 0 22px}.team-stat-row{display:grid;grid-template-columns:repeat(var(--columns),minmax(0,1fr));gap:10px;align-items:stretch}.team-stat-cell{display:flex;flex-direction:column;justify-content:space-between;gap:10px;min-width:0;min-height:88px;padding:12px;box-sizing:border-box;border:1px solid #dbe8df;border-radius:10px;background:#edf5f0;text-align:left;font:inherit;color:inherit}.team-stat-cell small{display:block;font-size:12px;line-height:1.35;overflow-wrap:anywhere}.team-stat-cell strong{display:block;margin-top:auto;font-size:24px;line-height:1.2;color:#155e48;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.team-stat-cell.team-players-tile{border-color:#90b69b;cursor:pointer}@media(max-width:380px){.team-stat-cell{padding:10px 8px}.team-stat-cell strong{font-size:21px}.team-stat-cell small{font-size:11px}}
+
+/* v0.65 · Gebietsauswahl und mobile Navigation */
+.quick-heading strong{font-size:13px;color:#214738}
+main>nav button{font-size:14px;font-weight:650;white-space:nowrap}
+main>.actions button[data-tab]{font-weight:650}
+.controls #search{min-width:min(100%,210px)}
+:focus-visible{outline:3px solid #3e956d;outline-offset:2px}
+@media(max-width:650px){
+ main{padding:14px 10px 48px}
+ main>nav{display:flex;flex-wrap:nowrap;gap:7px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;padding:8px 2px;margin:14px 0}
+ main>nav button{flex:0 0 auto;scroll-snap-align:start;min-height:44px;padding:10px 12px;font-size:13px}
+ .actions{gap:8px}
+}
+
+
+/* v0.68 · Fünf feste Kreise, wischbare Navigation (gleiche Bedienlogik wie die Rubriken) */
+header>div{max-width:1050px;margin:0 auto;display:block}
+header .header-main h1{margin-bottom:6px}
+header .header-main p{margin:2px 0 8px}
+header .header-main #summary{margin:9px 0 0;opacity:.85}
+.district-picker{margin-top:18px;padding-top:14px;border-top:1px solid #ffffff30}
+.district-kicker{font-size:11px;font-weight:800;letter-spacing:1.3px;color:#acdcbc;margin:0 0 9px}
+.district-tabs{display:flex;flex-wrap:nowrap;gap:8px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#6e9b86 transparent;min-width:0;margin:0;padding:2px 2px 8px}
+.district-tabs .district-tab{flex:0 0 auto;scroll-snap-align:start;border:1px solid #ffffff50;border-radius:10px;background:#ffffff0f;color:#f1f8f3;min-height:44px;padding:10px 16px;font-size:14px;font-weight:750;white-space:nowrap;box-shadow:none}
+.district-tabs .district-tab:hover{background:#ffffff28}
+.district-tabs .district-tab.is-selected{background:#bceec6!important;border-color:#bceec6;color:#15372d!important}
+.district-tabs .district-tab:focus-visible{outline:3px solid #bceec6;outline-offset:2px}
+.district-tabs .district-tab:disabled{opacity:.55;cursor:wait}
+.district-state{display:block;font-size:11px;color:#c6e0d1;line-height:1.35;margin:5px 2px 0}
+@media(max-width:690px){header{padding:22px 14px 17px}header .header-main h1{font-size:clamp(26px,7vw,36px)}.district-picker{margin-top:14px}.district-tabs .district-tab{padding:10px 13px;font-size:13px}}
+
+/* v0.68 · Vier kompakte Aktionen, Gebietsauswahl als natives Auswahlfeld */
+.actions:has(#districtJump){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:stretch}
+.actions:has(#districtJump) .upload,.actions:has(#districtJump) button,.actions:has(#districtJump) .district-action{min-width:0;min-height:67px;width:100%;margin:0;box-sizing:border-box}
+.actions:has(#districtJump) .upload,.actions:has(#districtJump) button{display:flex;justify-content:center;align-items:center;text-align:center;padding:11px 8px}
+.actions:has(#districtJump) .district-action{display:flex;flex-direction:column;justify-content:center;gap:4px;border:1px solid #7bb5a1;border-radius:11px;background:#fff;padding:7px 10px;color:#153e32;font-weight:750}
+.actions:has(#districtJump) .district-action span{font-size:12px;text-align:center;line-height:1.1}
+.actions:has(#districtJump) .district-action select{min-height:32px;height:34px;min-width:0;width:100%;padding:4px 22px 4px 8px;font-weight:750;color:#154e43;background:#eff9f3;border-color:#a9cdbb;border-radius:7px;font-size:13px;text-overflow:ellipsis}
+.actions:has(#districtJump) .upload:has(+input:disabled){opacity:.45;cursor:not-allowed}
+.actions:has(#districtJump) button:disabled{opacity:.5;cursor:not-allowed}
+@media (min-width:750px){.actions:has(#districtJump){grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:430px){.actions:has(#districtJump){gap:8px}.actions:has(#districtJump) .upload,.actions:has(#districtJump) button{font-size:12px}.actions:has(#districtJump) .district-action select{font-size:12px}}
+</style><header><div><div class="header-main"><span class="eyebrow">DATENZENTRALE · VERSION 0.71</span><h1>Amateurfußball am Ball</h1><p>Dein Fußball. Deine Daten.</p><div id="summary"></div></div></div></header><main><div class="actions"><label class="upload" for="import">JSON importieren</label><input id="import" type="file" accept=".json,application/json"><button id="export">Kreis sichern ↓</button><button id="exportAll" title="Alle fünf Kreise und zentrale Kreisduelle als eine JSON-Datei sichern">Gesamt-Backup ↓</button><label class="district-action" for="districtJump"><span>Kreis auswählen</span><select id="districtJump" aria-label="Fußballkreis oder alle Kreise auswählen"><option value="stormarn">Stormarn</option><option value="segeberg">Segeberg</option><option value="lauenburg">Herzogtum Lauenburg</option><option value="ostholstein">Ostholstein</option><option value="luebeck">Lübeck</option><option value="all">Alle Kreise</option></select></label></div><div id="status">Datenzentrale bereit.</div><div class="season-period"><label for="season">Saison<select id="season" aria-label="Saison"><option value="2026/27">2026/27</option></select></label><label for="period">Zeitraum<select id="period" aria-label="Zeitraum"><option value="season">Gesamte Saison</option><option value="2026-07">Juli 2026</option><option value="2026-08">August 2026</option><option value="2026-09">September 2026</option><option value="2026-10">Oktober 2026</option><option value="2026-11">November 2026</option><option value="2026-12">Dezember 2026</option><option value="2027-01">Januar 2027</option><option value="2027-02">Februar 2027</option><option value="2027-03">März 2027</option><option value="2027-04">April 2027</option><option value="2027-05">Mai 2027</option><option value="2027-06">Juni 2027</option><option value="custom">Eigener Zeitraum</option></select></label></div><div id="custom" hidden><input id="from" type="date" value="2026-11-01" aria-label="Von"><input id="to" type="date" value="2026-11-30" aria-label="Bis"></div><div class="controls"><fieldset id="competition" class="competition-picker"><legend>Wettbewerbe kombinieren</legend><div class="competition-options" id="competitionOptions" aria-label="Wettbewerbsauswahl"></div><div class="competition-presets"><button type="button" data-competition-preset="all">Gesamt</button><button type="button" data-competition-preset="league">Nur Ligen</button><button type="button" data-competition-preset="cups">Nur Pokale</button></div><p id="competitionSummary" aria-live="polite" hidden></p></fieldset><select id="gender" aria-label="Mannschaftskategorie"><option value="M">Herren</option><option value="F">Frauen</option><option value="JM">Junioren</option><option value="JF">Juniorinnen</option><option value="UM">Ü-Herren</option><option value="UF">Ü-Frauen</option><option value="all">Gesamt</option></select><select id="ageClass" aria-label="Altersklasse"><option value="">Alle Altersklassen</option></select></div><div class="controls"><select id="region" aria-label="Gebiet"><option value="">Alle Gebiete</option><option value="Nord">Nord</option><option value="Süd">Süd</option><option value="West">West</option><option value="Ost">Ost</option><option value="Mitte">Mitte</option></select><select id="venue" aria-label="Heim- oder Auswärtsspiele"><option value="all">Alle Spiele</option><option value="home">Nur Heimspiele</option><option value="away">Nur Auswärtsspiele</option></select></div><p id="coverage" class="note" hidden>Heim-/Auswärtswerte beruhen nur auf einzeln erfassten Spielen. Der Excel-Altbestand kann nicht auf Heim und Auswärts aufgeteilt werden. Auch in der Saisonansicht ist dies daher eine Teilbilanz.</p><nav><button data-tab="clubs">Vereine</button><button data-tab="teams">Mannschaften</button><button data-tab="coach">Trainer</button><button data-tab="player">Spieler</button><button data-tab="keeper">Torhüter</button><button data-tab="referee">Schiedsrichter</button></nav><div class="actions"><button data-tab="archive">Spielarchiv</button><button data-tab="recap">ReCap</button></div><div class="controls"><input id="search" placeholder="Name oder Verein suchen …" aria-label="Suche"><select id="sort" aria-label="Sortierung"></select><select id="direction" aria-label="Sortierrichtung"><option value="desc">Absteigend ↓</option><option value="asc">Aufsteigend ↑</option></select></div><div class="ranking-options" id="rankingOptions"><div id="minimumWrap" class="note minimum-filter" hidden><input id="minimum" type="checkbox" checked aria-label="Mindestanzahl der Einsätze anwenden"><label for="minimumCount">Mindestens</label><input id="minimumCount" type="number" min="0" step="1" value="3" inputmode="numeric" aria-label="Mindestanzahl Einsätze"><span>Einsätze</span></div><button id="detailed" type="button" aria-pressed="true">Detailliert ✓</button></div><p id="competitionInfo" hidden></p><section id="content"></section></main><dialog id="dialog"><button id="close" aria-label="Schließen">✕</button><h2 id="detailTitle"></h2><div id="detailBody"></div></dialog><script id="seed" type="application/json">{"schemaVersion":1,"project":{"name":"Stormarn am Ball","district":"Stormarn","regions":["Nord","Mitte","West","Süd","Ost"]},"teams":[],"people":[],"matches":[],"clubs":[],"imports":[],"personMerges":[],"seasons":[{"id":"2026/27"}],"competitions":[{"id":"league","name":"Ligensystem","type":"league"},{"id":"kreispokal","name":"Kreispokal Herren","type":"cup"},{"id":"frauen","name":"Kreispokal Frauen","type":"cup"},{"id":"untere","name":"Kreispokal untere Mannschaften","type":"cup"}]}</script><script>(async()=>{
+const originalHtml=document.documentElement.outerHTML;const databaseName='amateurfussball-am-ball-corrected-20261105-v048';let storageError='';
+const localStore={connection:null,queue:Promise.resolve(),open(name=databaseName){return new Promise((resolve,reject)=>{if(!globalThis.indexedDB)return reject(Error('IndexedDB fehlt'));const req=indexedDB.open(name,1);req.onupgradeneeded=()=>req.result.createObjectStore('state');req.onerror=()=>reject(req.error);req.onblocked=()=>reject(Error('Datenbank ist durch eine andere Version blockiert'));req.onsuccess=()=>{this.connection=req.result;this.connection.onversionchange=()=>this.connection.close();resolve()}})},read(key='current'){return new Promise((resolve,reject)=>{const tx=this.connection.transaction('state','readonly'),req=tx.objectStore('state').get(key);let data;req.onsuccess=()=>data=req.result;tx.oncomplete=()=>resolve(data);tx.onabort=()=>reject(tx.error);tx.onerror=()=>reject(tx.error)})},write(data,key='current'){const operation=this.queue.catch(()=>{}).then(()=>new Promise((resolve,reject)=>{const tx=this.connection.transaction('state','readwrite');tx.objectStore('state').put(data,key);tx.oncomplete=()=>resolve();tx.onabort=()=>reject(tx.error||Error('Speichern abgebrochen'));tx.onerror=()=>reject(tx.error)}));this.queue=operation;return operation}};
+
+const seed=JSON.parse(document.querySelector('#seed').textContent);let db=seed;let storedAreaRegistry=null;let storageReady=false;try{await localStore.open();const stored=await localStore.read();if(stored)db=stored;const registry=await localStore.read('areas-registry-v1');if(Array.isArray(registry))storedAreaRegistry=registry;storageReady=true}catch(e){storageError=(e.name||'Fehler')+': '+e.message;document.querySelector('#status').textContent='Lokale Datenbank nicht verfügbar. Daten können nur vorübergehend angezeigt und als JSON gesichert werden.'}
+let tab='teams',gender='M';const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),n=x=>Number(x)||0,fmt=x=>Number.isFinite(x)?x.toLocaleString('de-DE',{minimumFractionDigits:Number.isInteger(x)?0:2,maximumFractionDigits:2}):'–';
+function applyPersonMerges(data,merges){data.personMerges??=[];for(let merge of merges||[]){let {fromId,toId}=merge;if(fromId===toId)throw Error('Identische Zusammenführungs-IDs');let old=data.people.find(p=>p.id===fromId),target=data.people.find(p=>p.id===toId);if(!target)throw Error('Zielprofil fehlt: '+toId);if(merge.confirmedName)target.name=merge.confirmedName;if(merge.confirmedClub)target.club=merge.confirmedClub;if(merge.confirmedBaseline)target.baseline={...merge.confirmedBaseline};if(old){target.aliases=[...new Set([...(target.aliases||[]),...(old.aliases||[]),old.name].filter(n=>n!==target.name))];target.mergedIds=[...new Set([...(target.mergedIds||[]),...(old.mergedIds||[]),fromId])];data.people=data.people.filter(p=>p.id!==fromId)}for(let m of data.matches){let entries=[];for(let a of m.appearances||[]){let x={...a,personId:a.personId===fromId?toId:a.personId},existing=entries.find(p=>p.personId===x.personId&&p.role===x.role);if(existing){if(JSON.stringify(existing)!==JSON.stringify(x))throw Error('Widersprüchliche Einsätze bei Zusammenführung: '+m.id)}else entries.push(x)}m.appearances=entries;for(let ev of m.events||[])for(let k of ['personId','playerId','inPersonId','outPersonId'])if(ev[k]===fromId)ev[k]=toId}if(!data.personMerges.some(x=>x.fromId===fromId&&x.toId===toId))data.personMerges.push(merge)}return data}
+const LEGACY_SEASON='2026/27';
+const DEFAULT_COMPETITIONS=[{"id":"league","name":"Ligensystem","type":"league"},{"id":"kreispokal","name":"Kreispokal Herren","type":"cup"},{"id":"frauen","name":"Kreispokal Frauen","type":"cup"},{"id":"untere","name":"Kreispokal untere Mannschaften","type":"cup"}];
+// Wettbewerb-IDs sind stabil. Nur name und active werden über JSON geändert.
+function competitionDefinitions(){return (db.competitions||[]).filter(c=>c.active!==false)}
+function competitionById(id){return (db.competitions||[]).find(c=>c.id===id)}
+function matchCompetitionId(m){return m.competitionId||(m.competitionType==='league'?'league':m.competitionType==='cup'?(m.cupCategory||null):null)}
+function validateCompetitionDefinitions(items,existing=[]){if(!Array.isArray(items))throw Error('competitions muss eine Liste sein.');let seen=new Set();for(let c of items){if(!c||typeof c!=='object'||Array.isArray(c)||typeof c.id!=='string'||!/^[a-z0-9][a-z0-9_-]{0,79}$/.test(c.id)||seen.has(c.id))throw Error('Ungültige oder doppelte Wettbewerbs-ID.');seen.add(c.id);if(typeof c.name!=='string'||!c.name.trim()||c.name.length>100)throw Error('Wettbewerbsname fehlt oder ist zu lang: '+c.id);if(!['league','cup'].includes(c.type))throw Error('Wettbewerbstyp muss league oder cup sein: '+c.id);if(c.active!==undefined&&typeof c.active!=='boolean')throw Error('active muss true oder false sein: '+c.id);let old=existing.find(x=>x.id===c.id);if(old&&old.type!==c.type)throw Error('Wettbewerbstyp einer bestehenden ID darf nicht geändert werden: '+c.id)}}
+const seasonFields=['name','shortName','colors','color','backgroundColor','club','clubIds','league','weight','region','gender','category','ageClass','project','deduction','baseline','baselineByTeam','teamIds','active'];
+const categoryLabels={M:'Herren',F:'Frauen',JM:'Junioren',JF:'Juniorinnen',UM:'Ü-Herren',UF:'Ü-Frauen',all:'Gesamt'};
+function categoryCode(value){return ({Herren:'M',Frauen:'F',Junioren:'JM',Juniorinnen:'JF','Ü-Herren':'UM','Ü-Frauen':'UF'})[value]||value}
+function ageInfo(value){if(value==null||value==='')return {group:'',exact:''};let text=String(value).trim(),upper=text.toUpperCase().replace(/\s/g,'');if(/^(G(?:-JUGEND|-JUNIOREN|-JUNIORINNEN)?|BAMBINI)$/.test(upper))return {group:'G',exact:''};let letter=upper.match(/^([A-F])(?:-JUGEND|-JUNIOREN|-JUNIORINNEN)?$/);if(letter)return {group:letter[1],exact:''};let u=upper.match(/^U(\d{1,2})$/);if(u){let n=Number(u[1]);if(n<1||n>19)throw Error('Jugend-Altersklasse muss U1 bis U19 sein');return {group:n>=18?'A':n>=16?'B':n>=14?'C':n>=12?'D':n>=10?'E':n>=8?'F':'G',exact:'U'+n}}if(/^Ü\d{2}$/.test(upper))return {group:upper,exact:upper};throw Error('Unbekannte Altersklasse: '+text)}
+function teamCategory(t){return categoryCode(t.category)||(t.gender==='F'?'F':'M')}
+function teamMatchesCategory(t){if(!t)return false;let code=teamCategory(t),age=$('#ageClass')?.value||'';return (gender==='all'||code===gender)&&(!age||ageInfo(t.ageClass).group===age||ageInfo(t.ageClass).exact===age)}
+function matchTeam(id,m){let t=db.teams.find(t=>t.id===id);return t?{...t,...t.seasons?.[m?.season||selectedSeason()]}:null}
+function personTeams(e){let original=db.people.find(p=>p.id===e.id)||e,ids=new Set();for(let [season,r] of Object.entries(original.seasons||{}))if(allTime()||season===selectedSeason())for(let id of r.teamIds||[])ids.add(id);for(let m of db.matches.filter(inSelectedSeason))for(let a of m.appearances||[])if(a.personId===e.id&&a.role===e.role&&a.played)ids.add(a.teamId);return seasonTeams().filter(t=>ids.has(t.id))}
+function personMatchesCategory(e){if(gender==='all'&&!($('#ageClass')?.value))return true;let teams=personTeams(e);return teams.length?teams.some(teamMatchesCategory):!e.category&&!($('#ageClass')?.value)&&['M','F'].includes(gender)&&e.gender===gender}
+function categoryBaseline(e){if(gender==='all'&&!($('#ageClass')?.value))return true;if(tab==='teams')return teamMatchesCategory(e);let teams=personTeams(e);return teams.length?teams.every(teamMatchesCategory):personMatchesCategory(e)}
+function categoryTeamLabel(t){let label=categoryLabels[teamCategory(t)],age=t.ageClass;return label+(age?' · '+age:'')}
+function syncAgeOptions(){let old=$('#ageClass').value||'',options=[...['A','B','C','D','E','F','G'].map(g=>[g,g+'-Jugend']),...Array.from({length:19},(_,i)=>['U'+(19-i),'U'+(19-i)]),...[...new Set(db.teams.flatMap(t=>[t,...Object.values(t.seasons||{})]).map(t=>t.ageClass).filter(v=>v&&String(v).startsWith('Ü')))].sort().map(v=>[v,v])];$('#ageClass').innerHTML='<option value="">Alle Altersklassen</option>'+options.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('');$('#ageClass').value=options.some(([v])=>v===old)?old:''}
+function prepareCategories(d){for(let t of d.teams||[])for(let r of [t,...Object.values(t.seasons||{})]){if(r.category!==undefined){r.category=categoryCode(r.category);if(!Object.hasOwn(categoryLabels,r.category)||r.category==='all')throw Error('Unbekannte Mannschaftskategorie: '+t.id)}if(r.ageClass!==undefined){if(!r.category&&!t.category)throw Error('Kategorie zur Altersklasse fehlt: '+t.id);let age=ageInfo(r.ageClass);r.ageClass=age.exact||age.group;if(age.group&&r.category&&(['M','F'].includes(r.category)||(['JM','JF'].includes(r.category)&&age.group.startsWith('Ü'))||(['UM','UF'].includes(r.category)&&!age.group.startsWith('Ü'))))throw Error('Kategorie und Altersklasse passen nicht zusammen: '+t.id)}if(r.category&&r.gender&&r.gender!==(['F','JF','UF'].includes(r.category)?'F':'M'))throw Error('Kategorie und Geschlecht passen nicht zusammen: '+t.id)}return d}
+function validSeason(id){return /^\d{4}\/\d{2}$/.test(id)&&Number(id.slice(5))===(Number(id.slice(0,4))+1)%100}
+function seasonOfDate(date){let y=Number(date.slice(0,4));if(Number(date.slice(5,7))<7)y--;return y+'/'+String((y+1)%100).padStart(2,'0')}
+function copyData(x){return JSON.parse(JSON.stringify(x))}
+function seasonRecord(e){return Object.fromEntries(seasonFields.filter(k=>e[k]!==undefined).map(k=>[k,copyData(e[k])]))}
+function neutralRegion(value){return typeof value==='string'?value.trim().replace(/^.+\s+-\s+(Nord|Süd|West|Ost|Mitte)$/,'$1'):value}
+function validateProject(p){if(p===undefined)return;if(!p||typeof p!=='object'||Array.isArray(p))throw Error('Projektangaben müssen ein Objekt sein.');for(let k of ['name','district','club'])if(p[k]!==undefined&&(typeof p[k]!=='string'||p[k].length>160))throw Error('Ungültige Projektangabe: '+k);if(p.regions!==undefined&&(!Array.isArray(p.regions)||p.regions.some(r=>typeof r!=='string'||!r.trim()||r.length>100)))throw Error('Gebiete müssen eine Liste frei gewählter Namen sein.')}
+function syncProject(){let previous=neutralRegion($('#region').value),regions=new Set(activeAreaId==='stormarn'?['Nord','Süd','West','Ost','Mitte']:[]);for(let name of db.project?.regions||[])regions.add(neutralRegion(name));for(let e of [...(db.teams||[]),...(db.clubs||[])])for(let r of [e,...Object.values(e.seasons||{})])if(r.region)regions.add(neutralRegion(r.region));$('#region').innerHTML='<option value="">Alle Gebiete</option>'+[...regions].map(r=>`<option value="${esc(r)}">${esc(r)}</option>`).join('');$('#region').value=regions.has(previous)?previous:'';let name=db.project?.name||db.project?.district||db.project?.club||'';document.querySelector('header p').textContent=name?'Datenzentrale · '+name:'Datenzentrale'}
+function dataFilename(suffix='',data=db){let name=data.project?.name||data.project?.district||data.project?.club||'Amateurfussball';name=name.trim().replace(/[^\p{L}\p{N}_-]+/gu,'_').replace(/^_+|_+$/g,'')||'Amateurfussball';return name+'_Datenbestand'+suffix+'_'+new Date().toISOString().slice(0,10)+'.json'}
+function normalizeData(data){
+ for(let kind of ['teams','clubs','people'])for(let e of data[kind]||[])for(let rec of [e,...Object.values(e.seasons||{})])if(rec.region)rec.region=neutralRegion(rec.region);
+ data.seasons??=[{id:LEGACY_SEASON,baselineDate:data.baselineDate||'2026-11-01'}]; data.clubs??=[];data.imports??=[];data.competitions??=copyData(DEFAULT_COMPETITIONS);
+ // Der nicht projektzugehoerige Pokalgegner darf kein zusaetzlicher sichtbarer Verein sein.
+ // Alte lokal gespeicherte Daten koennen diesen Legacyeintrag weiterhin enthalten.
+ for(const c of data.clubs)if(c.id==='club-legacy-JuS%20Fischbek')c.hidden=true;
+ for(let m of data.matches){m.season??=seasonOfDate(m.date);if(!data.seasons.some(s=>s.id===m.season))data.seasons.push({id:m.season})}
+ for(let kind of ['teams','people'])for(let e of data[kind]){if(!e.seasons){e.seasons={};e.seasons[LEGACY_SEASON]=seasonRecord(e)} }
+ // Existing SG/FSG abbreviations do not establish constituent club identities.
+ for(let t of data.teams){if(t.project===false||t.seasons?.[LEGACY_SEASON]?.project===false||t.clubIds||(/^(?:SG|FSG)\b/i.test(t.name)&&!t.standaloneClub))continue;if(!t.club)continue;let id='club-legacy-'+encodeURIComponent(t.club);let club=data.clubs.find(c=>c.id===id);if(!club){club={id,name:t.name.replace(/\s+(?:III|II)\b/g,'').replace(/\s*\(9er\)/g,'').trim(),shortName:t.club,source:'Aus bestehender Vereinszuordnung übernommen'};data.clubs.push(club)}t.clubIds=[id];if(t.seasons[LEGACY_SEASON])t.seasons[LEGACY_SEASON].clubIds??=[id]}
+ return data;
+}
+let calculationSeason=null;function selectedSeason(){return calculationSeason||$('#season').value||LEGACY_SEASON}function allTime(){return selectedSeason()==='all'}function seasonLabel(){return allTime()?'All Time / Alle Saisons':selectedSeason()}function withinSeason(id,fn){let prior=calculationSeason;calculationSeason=id;try{return fn()}finally{calculationSeason=prior}}
+function seasonMeta(){return db.seasons.find(s=>s.id===selectedSeason())||{id:selectedSeason()}}
+function seasonEntity(e){let record=e.seasons?.[allTime()?Object.keys(e.seasons||{}).sort().at(-1):selectedSeason()];return {...e,...record,baseline:record?.baseline||{},baselineByTeam:record?.baselineByTeam||[],clubIds:record?.clubIds||[],club:record?.club||'',league:record?.league||'',weight:record?.weight??1}}
+function seasonTeams(){return db.teams.filter(e=>(allTime()?Object.keys(e.seasons||{}).length>0:e.seasons?.[selectedSeason()]&&($('#season').value==='all'||e.seasons[selectedSeason()].active!==false))).map(seasonEntity)}
+function seasonPeople(){return db.people.filter(e=>(allTime()?Object.keys(e.seasons||{}).length>0:e.seasons?.[selectedSeason()]&&($('#season').value==='all'||e.seasons[selectedSeason()].active!==false))).map(seasonEntity)}
+function inSelectedSeason(m){return allTime()||m.season===selectedSeason()}
+function syncSeasonOptions(preferred){let chosen=preferred||selectedSeason(),ids=db.seasons.map(s=>s.id).sort().reverse();$('#season').innerHTML='<option value="all">All Time / Alle Saisons</option>'+ids.map(id=>`<option value="${esc(id)}">${esc(id)}</option>`).join('');$('#season').value=chosen==='all'?'all':ids.includes(chosen)?chosen:ids[0]||'all';syncPeriodOptions()}
+function syncPeriodOptions(){if(allTime()){$('#period').innerHTML='<option value="season">Gesamter Zeitraum</option><option value="custom">Eigener Zeitraum</option>';$('#period').value='season';$('#from').value='';$('#to').value='';return}let previous=$('#period').value,year=Number(selectedSeason().slice(0,4)),months=Array.from({length:12},(_,i)=>{let d=new Date(Date.UTC(year,6+i,1)),key=d.toISOString().slice(0,7);return [key,d.toLocaleDateString('de-DE',{month:'long',year:'numeric',timeZone:'UTC'})]});$('#period').innerHTML='<option value="season">Gesamte Saison</option>'+months.map(([k,v])=>`<option value="${k}">${v}</option>`).join('')+'<option value="custom">Eigener Zeitraum</option>';$('#period').value=['season','custom',...months.map(m=>m[0])].includes(previous)?previous:'season';$('#from').value=year+'-07-01';$('#to').value=(year+1)+'-06-30'}
+function prepareSeasonImport(raw){
+ let d=prepareCategories(copyData(raw));validateProject(d.project);if(d.competitions!==undefined)validateCompetitionDefinitions(d.competitions,db.competitions);if(d.uiSettings!==undefined){let u=d.uiSettings;if(!u||typeof u!=='object'||Array.isArray(u))throw Error('Ungültige Anzeigeeinstellungen');if(u.detailed!==undefined&&typeof u.detailed!=='boolean')throw Error('Detailliert muss true oder false sein');if(u.minimum!==undefined&&(!u.minimum||typeof u.minimum.enabled!=='boolean'||!Number.isSafeInteger(u.minimum.count)||u.minimum.count<0))throw Error('Ungültige Mindestanzahl der Einsätze')}if(d.reviewOnly)throw Error('Prüfstände können nicht importiert werden.');
+ for(let k of ['teams','people','matches','clubs','seasons']){d[k]??=[];if(!Array.isArray(d[k]))throw Error(k+' muss eine Liste sein.')}
+ const registry=new Map(db.seasons.map(s=>[s.id,copyData(s)]));let explicit=d.season;if(explicit&&!validSeason(explicit))throw Error('Ungültige Saison: '+explicit);
+ for(let s of d.seasons){if(typeof s!=='object'||!validSeason(s.id))throw Error('Ungültige Saisonkennung.');if(s.baselineDate&&seasonOfDate(s.baselineDate)!==s.id)throw Error('Altbestand-Stichtag passt nicht zur Saison.');if(registry.get(s.id)?.baselineDate&&s.baselineDate&&registry.get(s.id).baselineDate!==s.baselineDate)throw Error('Bestehender Altbestand-Stichtag darf nicht geändert werden: '+s.id);registry.set(s.id,{...registry.get(s.id),...s})}
+ if(explicit&&!registry.has(explicit))registry.set(explicit,{id:explicit});
+ for(let m of d.matches){if(crossLedger.some(x=>x.id===m.id))throw Error('Spiel-ID '+m.id+' gehört zur zentralen Kreisduell-Datenbank. Bitte als Kreisduell importieren.');m.season??=explicit||seasonOfDate(m.date);if(!validSeason(m.season)||seasonOfDate(m.date)!==m.season)throw Error('Spieldatum passt nicht zur Saison: '+m.id);if(!registry.has(m.season))registry.set(m.season,{id:m.season});let old=db.matches.find(x=>x.id===m.id);if(old&&old.season!==m.season)throw Error('Spiel-ID ist bereits für eine andere Saison vergeben: '+m.id)}
+ let incomingSeasons=[...new Set([...(explicit?[explicit]:[]),...d.seasons.map(s=>s.id),...d.matches.map(m=>m.season)])];if(!incomingSeasons.length)incomingSeasons=[LEGACY_SEASON];
+ for(let kind of ['teams','people'])for(let e of d[kind]){
+  if(!e.seasons){let relevant=d.matches.filter(m=>kind==='teams'?[m.homeTeamId,m.awayTeamId].includes(e.id):(m.appearances||[]).some(a=>a.personId===e.id)||m.refereeId===e.id||(m.assistantReferees||[]).some(a=>a.personId===e.id));let ids=explicit?[explicit]:[...new Set(relevant.map(m=>m.season))];if(!ids.length){if(incomingSeasons.length!==1)throw Error('Saisonzuordnung fehlt: '+e.id);ids=incomingSeasons}if(ids.length>1&&e.baseline&&Object.keys(e.baseline).length)throw Error('Saison-Altsummen müssen getrennt angegeben werden: '+e.id);e.seasons=Object.fromEntries(ids.map(id=>[id,seasonRecord(e)]))}
+  for(let [id,record] of Object.entries(e.seasons)){if(!validSeason(id)||!record||typeof record!=='object'||Array.isArray(record))throw Error('Ungültige Saisonzuordnung: '+e.id);if(!registry.has(id))registry.set(id,{id});if(record.baseline&&Object.keys(record.baseline).length&&!registry.get(id).baselineDate)throw Error('Stichtag für Saison-Altsummen fehlt: '+id)}
+ }
+ for(let k of ['clubs','seasons']){let ids=new Set();for(let e of d[k]){if(typeof e.id!=='string'||!e.id||ids.has(e.id))throw Error('Fehlende oder doppelte ID in '+k);ids.add(e.id);if(k==='clubs'&&(typeof e.name!=='string'||!e.name.trim()))throw Error('Vereinsname fehlt.')}}
+ const clubIds=new Set([...db.clubs,...d.clubs].map(c=>c.id));for(let t of d.teams)for(let record of [t,...Object.values(t.seasons)])if(record.clubIds!==undefined&&(!Array.isArray(record.clubIds)||record.clubIds.some(id=>!clubIds.has(id))))throw Error('Unbekannte Vereinszuordnung: '+t.id);
+ const teamIds=new Set([...db.teams,...d.teams].map(t=>t.id));for(let p of d.people)for(let rec of Object.values(p.seasons))if(rec.teamIds&&(!Array.isArray(rec.teamIds)||rec.teamIds.some(id=>!teamIds.has(id))))throw Error('Unbekannte Mannschaftszuordnung: '+p.id);
+ // Every team participating in an imported match is enrolled in that season.
+ for(let m of d.matches)for(let id of [m.homeTeamId,m.awayTeamId])if(id){let t=d.teams.find(t=>t.id===id);if(!t){let existing=db.teams.find(t=>t.id===id);if(existing){t={id:existing.id,name:existing.name,gender:existing.gender,category:existing.category,ageClass:existing.ageClass,clubIds:existing.clubIds,seasons:{}};d.teams.push(t)}}if(t&&!t.seasons[m.season]&&!db.teams.find(x=>x.id===id)?.seasons?.[m.season])t.seasons[m.season]={name:t.name,gender:t.gender,category:t.category,ageClass:t.ageClass,clubIds:t.clubIds||[]};}
+ for(let m of d.matches){let duties=[...(m.appearances||[]).map(a=>({id:a.personId,teamId:a.teamId})),...(m.refereeId?[{id:m.refereeId}]:[]),...(m.assistantReferees||[]).map(a=>({id:a.personId}))];for(let duty of duties){let p=d.people.find(p=>p.id===duty.id);if(!p){let old=db.people.find(p=>p.id===duty.id);if(!old)continue;p={id:old.id,name:old.name,role:old.role,gender:old.gender,seasons:{}};d.people.push(p)}if(!p.seasons[m.season]&&!db.people.find(x=>x.id===p.id)?.seasons?.[m.season])p.seasons[m.season]={name:p.name};let rec=p.seasons[m.season];if(rec&&duty.teamId)rec.teamIds=[...new Set([...(rec.teamIds||[]),duty.teamId])];}}
+ d.seasons=[...registry.values()];return d;
+}
+function mergeSeasonImport(d){let next=copyData(db);for(let k of ['clubs','seasons','teams','people','matches'])for(let x of d[k]){let i=next[k].findIndex(o=>o.id===x.id);if(i<0){next[k].push(copyData(x));continue}let old=next[k][i];if(['teams','people'].includes(k)){let records=copyData(old.seasons||{});for(let [id,record] of Object.entries(x.seasons||{})){let existing=records[id];if(existing?.baseline&&record.baseline&&JSON.stringify(existing.baseline)!==JSON.stringify(record.baseline))throw Error('Abweichende bestehende Saison-Altsummen: '+x.id+' / '+id);records[id]={...existing,...record,...(existing?.baseline?{baseline:existing.baseline}:{})}}next[k][i]={...old,...x,seasons:records,...(old.baseline?{baseline:old.baseline}:{})};}else next[k][i]={...old,...x}}
+ if(d.competitions){for(let c of d.competitions){let i=next.competitions.findIndex(x=>x.id===c.id);if(i<0)next.competitions.push(copyData(c));else next.competitions[i]={...next.competitions[i],...copyData(c)}}}if(d.project){next.project={...next.project,...copyData(d.project)}}if(d.uiSettings){next.uiSettings={...next.uiSettings,...copyData(d.uiSettings)}}applyPersonMerges(next,[...(db.personMerges||[]),...(d.personMerges||[])]);normalizeData(next);return next;}
+const clubMetrics=[['points','Gesamtpunkte'],['teamCount','Mannschaften'],['played','Mannschaftseinsätze'],['wins','Siege'],['draws','Unentschieden'],['losses','Niederlagen'],['gf','Tore'],['ga','Gegentore'],['difference','Tordifferenz'],['ppg','Punkte / Wertung'],['winrate','Siegquote (%)'],['off','Tore / Mannschaftseinsatz'],['def','Gegentore / Mannschaftseinsatz'],['weightedOff','Gewichtete Offensive'],['weightedDef','Gewichtete Defensive'],['players','Eingesetzte Spieler (belegt)'],['encounters','Begegnungen (belegt)'],['yellow','Gelbe Karten (belegt)'],['yellowRed','Gelb-Rote Karten (belegt)'],['red','Rote Karten (belegt)'],['name','Name (alphabetisch)']];
+function colorStyle(e){let colors=Array.isArray(e.colors)?e.colors:[e.color||e.backgroundColor];colors=colors.filter(c=>typeof c==='string'&&/^#[0-9a-f]{6}$/i.test(c)).slice(0,3);if(!colors.length)return '';let background=colors.length===1?colors[0]:`linear-gradient(110deg,${colors.flatMap((c,i)=>[c+' '+(i*100/colors.length)+'%',c+' '+((i+1)*100/colors.length)+'%']).join(',')})`;return `style="border-left:5px solid ${colors[0]};background:linear-gradient(#ffffffd9,#ffffffd9),${background};color:#172b32"`}
+function validateColors(d){for(let kind of ['clubs','teams'])for(let e of d[kind]||[])for(let record of [e,...Object.values(e.seasons||{})]){if(record.colors!==undefined&&(!Array.isArray(record.colors)||record.colors.length<1||record.colors.length>3||record.colors.some(c=>typeof c!=='string'||!/^#[0-9a-f]{6}$/i.test(c))))throw Error('Farben benötigen eine Liste mit ein bis drei Hexfarben, z. B. #008040: '+e.id);for(let key of ['color','backgroundColor'])if(record[key]!==undefined&&(typeof record[key]!=='string'||!/^#[0-9a-f]{6}$/i.test(record[key])))throw Error('Ungültige Farbe: '+e.id)}}
+function clubTeams(id){if(!allTime())return singleClubTeams(id);let unique=new Map();for(let season of db.seasons)for(let team of withinSeason(season.id,()=>singleClubTeams(id)))unique.set(team.id,team);return [...unique.values()]}function statsForClub(id,teams){let prior=allTimeClubId;allTimeClubId=id;try{return clubStats(teams)}finally{allTimeClubId=prior}}
+function singleClubTeams(id){return seasonTeams().filter(t=>t.project!==false&&t.clubIds.includes(id)&&teamMatchesCategory(t)&&(!$('#region').value||t.region===$('#region').value))}
+function clubPlayers(teams,clubId=allTimeClubId){let ids=new Set(teams.map(t=>t.id)),people=new Map(),aliases=new Map((db.personMerges||[]).map(m=>[m.fromId,m.toId]));for(let m of matches())for(let a of m.appearances||[]){if(!a.played||!ids.has(a.teamId)||!['player','keeper'].includes(a.role))continue;if(allTime()&&clubId&&!db.teams.find(t=>t.id===a.teamId)?.seasons?.[m.season]?.clubIds?.includes(clubId))continue;let id=a.personId;while(aliases.has(id))id=aliases.get(id);let p=db.people.find(p=>p.id===id);if(!p)continue;let canonical=p.canonicalPersonId||p.personIdentityId||id;let row=people.get(canonical);if(!row){row={id:canonical,name:p.name,teams:new Map(),matches:new Set()};people.set(canonical,row)}let group=row.teams.get(a.teamId)||new Set();group.add(m.id);row.teams.set(a.teamId,group);row.matches.add(m.id)}return [...people.values()].sort((a,b)=>a.name.localeCompare(b.name,'de'))}
+function clubStats(teams){if(!allTime())return singleClubStats(teams);let clubId=allTimeClubId,rows=db.seasons.map(s=>withinSeason(s.id,()=>singleClubStats(clubId?clubTeams(clubId):seasonTeams().filter(t=>teams.some(x=>x.id===t.id)))));let out=sumSeasonStats(rows);out.teamCount=teams.length;out.players=clubPlayers(teams,clubId).length;out.encounters=new Set(matches().filter(m=>[m.homeTeamId,m.awayTeamId].some(id=>teams.some(t=>t.id===id)&&(!clubId||db.teams.find(t=>t.id===id)?.seasons?.[m.season]?.clubIds?.includes(clubId)))).map(m=>m.id)).size;out.ppg=out.points/resultCount(out);out.winrate=100*out.wins/resultCount(out);out.off=out.gf/out.played;out.def=out.ga/out.played;out.weightedOff=out.weightedGF/out.played;out.weightedDef=out.weightedGA/out.played;return out}let allTimeClubId=null;
+function singleClubStats(teams){let out={teamCount:teams.length,played:0,wins:0,draws:0,losses:0,points:0,gf:0,ga:0,awardedWins:0,awardedLosses:0,yellow:0,yellowRed:0,red:0,weightedGF:0,weightedGA:0};let prior=tab,venue=$('#venue').value;try{tab='teams';$('#venue').value='all';for(let t of teams){let s=stats(t);for(let k of ['played','wins','draws','losses','points','gf','ga','awardedWins','awardedLosses'])out[k]+=n(s[k]);out.weightedGF+=s.gf*(t.weight||1);out.weightedGA+=s.ga/(t.weight||1);let c=cardStats(t.id);for(let k of ['yellow','yellowRed','red'])out[k]+=c[k]}}finally{tab=prior;$('#venue').value=venue}let ids=new Set(teams.map(t=>t.id));out.encounters=new Set(matches().filter(m=>ids.has(m.homeTeamId)||ids.has(m.awayTeamId)).map(m=>m.id)).size;out.players=clubPlayers(teams).length;out.difference=out.gf-out.ga;out.ppg=out.points/resultCount(out);out.winrate=100*out.wins/resultCount(out);out.off=out.gf/out.played;out.def=out.ga/out.played;out.weightedOff=out.weightedGF/out.played;out.weightedDef=out.weightedGA/out.played;return out}
+function showClubPlayers(id){let teams=clubTeams(id),c=db.clubs.find(c=>c.id===id),players=clubPlayers(teams,id);show(c.name+' · Eingesetzte Spieler',`<p>${players.length} eindeutig zugeordnete Spieler und Torhüter aus dokumentierten Einzelspielen. Unbenutzte Ersatzspieler und reine Trainereinsätze zählen nicht.</p><p>Getrennte Rollenprofile derselben Person werden nur bei hinterlegter gemeinsamer Personenkennung zusammengefasst.</p>`+players.map(p=>`<div class="club-person"><strong>${esc(p.name)}</strong><small>${[...p.teams].map(([id,ms])=>esc(teams.find(t=>t.id===id)?.name||id)+': '+ms.size+' Einsätze').join(' · ')}</small></div>`).join(''))}
+function clubValue(key,value){return key==='winrate'?percentValue(value):['ppg','off','def','weightedOff','weightedDef'].includes(key)?decimalValue(value):fmt(value)}
+function clubSummaryTiles(s){let rows=[['points','teamCount'],['played','players'],['encounters','wins'],['draws','losses'],['gf','ga','difference'],['ppg','winrate'],['weightedOff','weightedDef'],['yellow','red','yellowRed']],labels={points:'Gesamtpunkte',teamCount:'Mannschaften',played:'Mannschaftseinsätze',players:'Eingesetzte Spieler',encounters:'Spiele',wins:'Siege',draws:'Unentschieden',losses:'Niederlagen',gf:'Tore',ga:'Gegentore',difference:'Differenz',ppg:'Punktedurchschnitt',winrate:'Siegquote',weightedOff:'Gewichtete Offensive',weightedDef:'Gewichtete Defensive',yellow:'Gelbe Karten',red:'Rote Karten',yellowRed:'Gelb-Rote Karten'};let html='<div class="team-profile-stats club-profile-stats">'+rows.map(row=>'<div class="team-stat-row" style="--columns:'+row.length+'">'+row.map(key=>{let value=clubValue(key,s[key]);if(key==='winrate'&&Number.isFinite(s[key]))value+=' %';return key==='players'?`<button type="button" class="team-stat-cell team-players-tile" id="clubPlayersDetail"><small>${esc(labels[key])}</small><strong>${esc(value)}</strong></button>`:`<div class="team-stat-cell"><small>${esc(labels[key])}</small><strong>${esc(value)}</strong></div>`}).join('')+'</div>').join('')+'</div>';if(s.awardedWins||s.awardedLosses)html+=detailTiles([['Administrative Siege',s.awardedWins||0],['Administrative Niederlagen',s.awardedLosses||0]]);return html}
+function showClub(id){
+ let c=db.clubs.find(c=>c.id===id);if(!c||c.hidden===true)return;
+ let teams=clubTeams(id);
+ if(!hasProjectTeamForSelectedSeason(id)){
+  show(c.name,`<p class="detail-context">${esc(seasonLabel())}</p><div class="club-empty-info"><strong>Aktuell keine Projektmannschaft</strong>Dieser Verein ist in der Vereinsdatenbank mit Kürzel und Vereinsfarben hinterlegt, hat jedoch in dieser Saison keine aktive Mannschaft im Projekt. Er bleibt sichtbar und kann später einer Mannschaft zugeordnet werden.</div><p>Vereinskürzel: ${esc(c.shortName||'–')}</p>`);
+  return;
+ }
+ let s=statsForClub(id,teams);
+ show(c.name,`<p>${esc(seasonLabel())} · ${esc(competitionLabel())}</p>${clubSummaryTiles(s)}<p>Gesamtwerte summieren alle ausgewählten Mannschaftsleistungen. Interne Duelle zählen mit beiden Mannschaften, als belegte Begegnung nur einmal. Verwaltungswertungen zählen getrennt von ausgetragenen Spielen.</p><h3>Mannschaften</h3>`+teams.map(t=>`<button class="game" data-club-team="${esc(t.id)}" ${colorStyle(t)}>${clubTeamLabel(t)}</button>`).join(''));
+ $('#clubPlayersDetail').onclick=()=>showClubPlayers(id);bindClubTeams();
+}
+function hasProjectTeamForSelectedSeason(id){
+ return allTime()?db.teams.some(t=>t.project!==false&&Object.values(t.seasons||{}).some(s=>s.active!==false&&(s.clubIds||t.clubIds||[]).includes(id))):seasonTeams().some(t=>t.project!==false&&(t.clubIds||[]).includes(id));
+}
+function bindClubTeams(){document.querySelectorAll('[data-club-team]').forEach(b=>b.onclick=()=>{tab='teams';render();profile(b.dataset.clubTeam)})}
+function abbreviationBadge(value){return typeof value==='string'&&value.trim()?`<span class="abbreviation">${esc(value.trim())}</span>`:''}
+function clubTeamLabel(t){return `<span class="club-team-name">${esc(t.name)}</span><span class="club-team-meta">${abbreviationBadge(t.shortName)}<span class="club-team-category">${esc(categoryTeamLabel(t))}</span></span>`}
+function teamLabel(t){return esc(t.name)+(t.shortName?' '+abbreviationBadge(t.shortName):'')}
+function personAbbreviations(p){let original=db.people.find(e=>e.id===p.id)||p,codes=new Set();let ids=allTime()?db.seasons.map(s=>s.id):[selectedSeason()];for(let season of ids)withinSeason(season,()=>{let teams=seasonTeams(),teamIds=new Set(original.seasons?.[season]?.teamIds||[]);for(let m of db.matches.filter(inSelectedSeason))for(let a of m.appearances||[])if(a.personId===p.id&&a.played&&a.role===p.role)teamIds.add(a.teamId);for(let t of teams)if(teamIds.has(t.id)&&t.shortName)codes.add(t.shortName)});return [...codes].map(abbreviationBadge).join(' ')}
+function validateAbbreviations(d){for(let kind of ['clubs','teams'])for(let e of d[kind]||[])for(let record of [e,...Object.values(e.seasons||{})])if(record.shortName!==undefined&&(typeof record.shortName!=='string'||!record.shortName.trim()||record.shortName.length>40))throw Error('Kürzel muss ein nichtleerer Text mit höchstens 40 Zeichen sein: '+e.id)}
+
+function renderClubs(){
+ $('#minimumWrap').hidden=true;$('#region').hidden=false;$('#venue').hidden=true;$('#coverage').hidden=true;$('#competitionInfo').hidden=true;$('#custom').hidden=$('#period').value!=='custom';
+ let prior=$('#sort').dataset?.view,old=$('#sort').value;if(prior!=='clubs')old='points';$('#sort').innerHTML=clubMetrics.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');$('#sort').value=clubMetrics.some(([k])=>k===old)?old:'points';if($('#sort').dataset)$('#sort').dataset.view='clubs';
+ let q=$('#search').value.toLocaleLowerCase('de'),matchesSearch=c=>(c.name+' '+(c.shortName||'')).toLocaleLowerCase('de').includes(q);
+ let rows=db.clubs.filter(c=>c.hidden!==true).map(c=>({c,teams:clubTeams(c.id)})).filter(r=>r.teams.length&&matchesSearch(r.c)).map(r=>({...r,s:statsForClub(r.c.id,r.teams)})),key=$('#sort').value,asc=$('#direction').value==='asc';
+ rows.sort((a,b)=>{if(key==='name')return (asc?1:-1)*a.c.name.localeCompare(b.c.name,'de');let av=a.s[key],bv=b.s[key];return (Number.isFinite(av)&&Number.isFinite(bv)?(asc?av-bv:bv-av):Number.isFinite(av)?-1:Number.isFinite(bv)?1:0)||a.c.name.localeCompare(b.c.name,'de')});
+ // Ohne Mannschaft: sichtbar im eigenen Vereinsverzeichnis, aber niemals als Null-Punkte-Ranking.
+ // Bei gesetztem Gebietsfilter werden unzugeordnete Vereine ohne verlässliche Region ausgeblendet.
+ let inactiveClubs=db.clubs.filter(c=>c.hidden!==true&&!hasProjectTeamForSelectedSeason(c.id)&&matchesSearch(c)&&(!$('#region').value||c.region===$('#region').value)).sort((a,b)=>a.name.localeCompare(b.name,'de'));
+ let ranked=rows.map(({c,teams,s},i)=>`<article class="club-card" ${colorStyle(c)}><button class="club-heading" data-club="${esc(c.id)}"><span><small>PLATZ ${i+1} · ${teams.length} Mannschaft${teams.length===1?'':'en'}</small><strong>${esc(c.name)} ${abbreviationBadge(c.shortName)}</strong></span><span class="club-score">${key==='name'?'':clubValue(key,s[key])}<small>${esc(clubMetrics.find(([k])=>k===key)?.[1]||'')}</small></span></button><div class="club-kpis"><span><small>Mannschaften</small><b>${teams.length}</b></span><span><small>Einsätze</small><b>${s.played}</b></span><span><small>Gesamtpunkte</small><b>${s.points}</b></span><button data-club-players="${esc(c.id)}"><small>Eingesetzte Spieler ›</small><b>${s.players}</b></button></div><div class="club-team-chips">${teams.map(t=>`<button data-club-team="${esc(t.id)}" ${colorStyle(t)}>${clubTeamLabel(t)}</button>`).join('')}</div></article>`).join('');
+ let inactive=inactiveClubs.length?`<section class="club-inactive-section" aria-label="Vereine ohne Projektmannschaft"><h2>Vereine ohne Projektmannschaft (${inactiveClubs.length})</h2><p class="club-inactive-note">Diese Vereine sind in der Datenbank hinterlegt, nehmen derzeit aber mit keiner Mannschaft am Projekt teil. Sie zählen nicht in die sportliche Rangliste.</p><div class="club-inactive-grid">${inactiveClubs.map(c=>`<button class="club-inactive-card" data-club="${esc(c.id)}" ${colorStyle(c)}><strong>${esc(c.name)} ${abbreviationBadge(c.shortName)}</strong><small>Aktuell keine Projektmannschaft · Vereinsprofil ansehen</small></button>`).join('')}</div></section>`:'';
+ $('#content').innerHTML='<p class="club-scope">Vereinsgesamtbilanz aller zugehörigen Mannschaften in Deiner Auswahl. Spieler und Begegnungen sind nur aus erfassten Einzelspielen gezählt.</p>'+ranked+inactive+(!rows.length&&!inactiveClubs.length?'<div class="empty">Keine Vereine für diese Auswahl.</div>':'');
+ let unlinked=seasonTeams().filter(t=>t.project!==false&&!t.clubIds.length&&teamMatchesCategory(t)&&(!$('#region').value||t.region===$('#region').value));if(unlinked.length)$('#content').innerHTML+=`<details class="club-unlinked"><summary>${unlinked.length} Mannschaften mit offener Vereinszuordnung</summary>${unlinked.map(t=>`<p>${teamLabel(t)}</p>`).join('')}</details>`;
+ document.querySelectorAll('[data-club]').forEach(b=>b.onclick=()=>showClub(b.dataset.club));document.querySelectorAll('[data-club-players]').forEach(b=>b.onclick=()=>showClubPlayers(b.dataset.clubPlayers));bindClubTeams();
+}
+
+normalizeData(db);
+// Datenbereiche v0.66: feste Fußballkreise mit strikt getrennten IndexedDB-Speichern.
+// Stormarn bleibt im Originalspeicher, damit bestehende Nutzerdaten nicht verloren gehen.
+const STORMARN_AREA={id:'stormarn',name:'Stormarn',store:databaseName};
+const STANDARD_AREAS=[STORMARN_AREA,
+  {id:'segeberg',name:'Segeberg',store:'amateurfussball-am-ball-district-segeberg'},
+  {id:'lauenburg',name:'Herzogtum Lauenburg',store:'amateurfussball-am-ball-district-lauenburg'},
+  {id:'ostholstein',name:'Ostholstein',store:'amateurfussball-am-ball-district-ostholstein'},
+  {id:'luebeck',name:'Lübeck',store:'amateurfussball-am-ball-district-luebeck'}];
+const areas=STANDARD_AREAS.map(a=>({...a}));
+let activeAreaId='stormarn',scopeBusy=false;
+// Falls in v0.65 schon einer der fünf Kreise mit »+ Neu« angelegt wurde,
+// öffnen wir automatisch dessen alte Datenbank unter dem neuen festen Button.
+let storedAreas=Array.isArray(storedAreaRegistry)?storedAreaRegistry:[];
+try{let fromLocal=JSON.parse(localStorage.getItem('am-ball-data-areas-v1')||'[]');if(Array.isArray(fromLocal))storedAreas=[...storedAreas,...fromLocal]}catch(e){}
+const normalizedAreaName=n=>String(n||'').toLocaleLowerCase('de').normalize('NFKC').replace(/^(?:kfv|kreisfußballverband|kreisfussballverband|fußballkreis|fussballkreis|kreis)\s+/,'').replace(/[^\p{L}\p{N}]/gu,'');
+for(const a of storedAreas){
+  if(!a||typeof a.id!=='string'||!/^area-[a-z0-9-]{6,80}$/.test(a.id)||typeof a.name!=='string')continue;
+  let match=areas.find(x=>x.id!=='stormarn'&&normalizedAreaName(x.name)===normalizedAreaName(a.name));
+  if(match&&match.store.startsWith('amateurfussball-am-ball-district-'))match.store='amateurfussball-am-ball-scope-'+a.id;
+}
+
+// v0.67: Zentrale, eindeutig adressierte Kreisduelle. Ein Spiel wird nur im
+// Kreisduell-Register gespeichert. In den Kreisansichten erscheinen daraus
+// fluechtige, nicht mitgespeicherte Projektionen.
+const sharedStore={...localStore,connection:null,queue:Promise.resolve()};
+let sharedReady=false,crossLedger=[];
+try{
+  await sharedStore.open('amateurfussball-am-ball-cross-district-v1');
+  let storedCross=await sharedStore.read('matches');
+  if(Array.isArray(storedCross))crossLedger=storedCross;
+  sharedReady=true;
+}catch(e){storageError='Kreisübergreifende Datenbank: '+e.message}
+function persistableData(input){let d=copyData(input);d.matches=(d.matches||[]).filter(m=>!m._crossDistrict);for(let old of d._crossShadowMatches||[])if(!d.matches.some(m=>m.id===old.id))d.matches.push(old);delete d._crossShadowMatches;d.teams=(d.teams||[]).filter(t=>!t._crossExternal);return d}
+// v0.69: Schutz vor derselben Begegnung mit verschiedenen IDs.
+// Die Alt-Erfassung bleibt unangetastet und zaehlt im eigenen Kreis; die
+// zentrale Projektion wird dort in diesem Fall nicht erneut addiert.
+function fixtureName(value){return String(value||'').toLocaleLowerCase('de').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/ß/g,'ss').replace(/^(?:external|extern)[-\s]*/,'').replace(/(?:erste|1\.?)[-\s]*herren$/,'').replace(/[^a-z0-9]/g,'')}
+function sameCentralFixture(a,b){return a&&b&&a.date===b.date&&a.season===b.season&&a.competitionType===b.competitionType&&['home','away'].every(key=>a[key]?.areaId===b[key]?.areaId&&a[key]?.teamId===b[key]?.teamId)}
+function sameCrossLocalFixture(local,central,areaId,records){
+  if(!local||!central||local.id===central.id||local.date!==central.date||
+    (local.season||seasonOfDate(local.date))!==(central.season||seasonOfDate(central.date))||
+    local.competitionType!==central.competitionType||local.status==='cancelled'||local.status==='postponed')return false;
+  let ownHome=central.home.areaId===areaId,ownAway=central.away.areaId===areaId;
+  if(ownHome===ownAway)return false;
+  let own=ownHome?central.home:central.away,other=ownHome?central.away:central.home;
+  if((ownHome?local.homeTeamId:local.awayTeamId)!==own.teamId)return false;
+  if(central.officialMatchId&&local.officialMatchId&&String(central.officialMatchId)===String(local.officialMatchId))return true;
+  let oldOtherId=ownHome?local.awayTeamId:local.homeTeamId;
+  let source=records[areaId]||{teams:[]};
+  let oldOther=source.teams.find(t=>t.id===oldOtherId);
+  let formerNames=[ownHome?local.awayName:local.homeName,oldOther?.name,oldOther?.shortName];
+  let target=fixtureName(other.name||records[other.areaId]?.teams?.find(t=>t.id===other.teamId)?.name);
+  if(!target)return false;
+  return formerNames.some(name=>fixtureName(name)===target)||
+    (String(oldOtherId||'').startsWith('external-')&&fixtureName(oldOtherId.slice(9))===target);
+}
+function matchingLocalCrossRecords(m,areaId,records){return (records[areaId]?.matches||[]).filter(local=>sameCrossLocalFixture(local,m,areaId,records))}
+function crossDuplicateSummary(ledger,records){let matches=[];for(let m of ledger)for(let id of new Set(matchAreas(m)))for(let local of matchingLocalCrossRecords(m,id,records))matches.push({area:id,localId:local.id,centralId:m.id,date:m.date});return matches}
+function foreignTeamId(side){return '__cross__'+side.areaId+'__'+encodeURIComponent(side.teamId)}
+function localTeamIn(data,side){return (data.teams||[]).find(t=>t.id===side.teamId)}
+function sideName(side,records){return side.name||localTeamIn(records[side.areaId]||{teams:[]},side)?.name||side.teamId}
+function projectedMatch(m,districtId,records){
+  const mapSide=side=>side.areaId===districtId?side.teamId:foreignTeamId(side);
+  let projected={...copyData(m),homeTeamId:mapSide(m.home),awayTeamId:mapSide(m.away),
+    homeName:sideName(m.home,records),awayName:sideName(m.away,records),_crossDistrict:true,
+    appearances:(m.appearances||[]).filter(a=>a.areaId===districtId).map(a=>{let r={...a};delete r.areaId;return r}),
+    events:(m.events||[]).map(ev=>{let e={...ev};let side=e.teamAreaId&&[m.home,m.away].find(s=>s.areaId===e.teamAreaId&&s.teamId===e.teamId);if(side)e.teamId=mapSide(side);if(e.personAreaId&&e.personAreaId!==districtId)delete e.personId;delete e.personAreaId;delete e.teamAreaId;return e})};
+  if(m.teamCards){projected.teamCards={};for(let sideKey of ['home','away']){
+    const card=m.teamCards[sideKey];if(card)projected.teamCards[mapSide(m[sideKey])]=copyData(card);
+  }}
+  if(m.winner){projected.winnerTeamId=mapSide(m.winner);delete projected.winner}
+  if(m.nonAttending){projected.nonAttendingTeamId=mapSide(m.nonAttending);delete projected.nonAttending}
+  if(m.refereeAreaId!==districtId)delete projected.refereeId;
+  if(m.refereeAreaId!==districtId)delete projected.assistantReferees;
+  if(m.home.areaId!==districtId)delete projected.referee;
+  delete projected.refereeAreaId;delete projected.home;delete projected.away;
+  return projected;
+}
+// v0.71: Auch die nur fuer eine Kreisansicht projizierte externe
+// Mannschaft muss ihren tatsaechlichen Herkunftskreis tragen.
+// Andernfalls zeigt der ReCap-Kreisvergleich "Noch nicht zugeordnet".
+function externalTeamsFor(m,districtId,records){
+  const side=m.home.areaId===districtId?m.away:m.home;
+  const origin=areas.find(a=>a.id===side.areaId)?.name||'';
+  const name=sideName(side,records);
+  return [{id:foreignTeamId(side),name,project:false,_crossExternal:true,
+    ...(origin?{district:origin}:{}),
+    seasons:{[m.season||seasonOfDate(m.date)]:{name,project:false,gender:'M',...(origin?{district:origin}:{})}}}];
+}
+function attachCrossView(data,districtId,ledger=crossLedger,records=null){
+  let d=persistableData(data),pool=records||{[districtId]:d};
+  for(let m of ledger){
+    if(m.home.areaId!==districtId&&m.away.areaId!==districtId)continue;
+    if(d.matches.some(x=>x.id===m.id))throw Error('Spiel-ID kollidiert mit einem bestehenden Kreisspiel: '+m.id);
+    // Die zentrale Fassung wird angezeigt, der aeltere lokale Bericht bleibt
+    // fuer das naechste Speichern unsichtbar im Schattenarchiv erhalten.
+    let previous=matchingLocalCrossRecords(m,districtId,pool);
+    if(previous.length){
+      d._crossShadowMatches??=[];
+      for(let local of previous)if(!d._crossShadowMatches.some(x=>x.id===local.id))d._crossShadowMatches.push(copyData(local));
+      let ids=new Set(previous.map(x=>x.id));d.matches=d.matches.filter(x=>!ids.has(x.id));
+    }
+    let foreign=externalTeamsFor(m,districtId,pool)[0],existing=d.teams.find(t=>t.id===foreign.id);
+    if(existing&&!existing._crossExternal)throw Error('Interne ID-Kollision: '+foreign.id);
+    if(!existing)d.teams.push(foreign);else existing.seasons={...existing.seasons,...foreign.seasons};
+    d.matches.push(projectedMatch(m,districtId,pool));
+  }
+  return d;
+}
+function refreshCrossView(){db=attachCrossView(db,activeAreaId,crossLedger)}
+
+
+// v0.68: Gemeinsame, schreibgeschuetzte Sicht auf die fuenf Kreise.
+// Kreis-Mannschaft-IDs werden nur in dieser Sicht praefixiert; die echten
+// Kreis-Datenbanken bleiben unveraendert. Zentral importierte Spiele sind
+// genau einmal in der gesamten Spielliste enthalten.
+const ALL_VIEW_ID='all';
+let parkedAreaId='stormarn';
+const globalId=(area,id)=>area+'::'+id;
+function globalTeam(team,area){
+  let t=copyData(team); t.id=globalId(area.id,t.id);t.region=area.name;
+  t.clubIds=(t.clubIds||[]).map(id=>globalId(area.id,id));
+  for(let rec of Object.values(t.seasons||{})){
+    rec.region=area.name;
+    if(Array.isArray(rec.clubIds))rec.clubIds=rec.clubIds.map(id=>globalId(area.id,id));
+    if(rec.teamId)rec.teamId=globalId(area.id,rec.teamId);
+  }
+  return t;
+}
+function globalClub(club,area){
+  let c=copyData(club);c.id=globalId(area.id,c.id);c.region=area.name;
+  c.name=c.name+' · '+area.name;
+  for(let rec of Object.values(c.seasons||{}))rec.region=area.name;
+  return c;
+}
+function globalPerson(person,area){
+  let p=copyData(person);p.id=globalId(area.id,p.id);p.region=area.name;
+  if(Array.isArray(p.teamIds))p.teamIds=p.teamIds.map(id=>globalId(area.id,id));
+  if(Array.isArray(p.clubIds))p.clubIds=p.clubIds.map(id=>globalId(area.id,id));
+  if(p.teamId)p.teamId=globalId(area.id,p.teamId);
+  for(let rec of Object.values(p.seasons||{})){
+    rec.region=area.name;
+    if(rec.teamId)rec.teamId=globalId(area.id,rec.teamId);
+    if(Array.isArray(rec.teamIds))rec.teamIds=rec.teamIds.map(id=>globalId(area.id,id));
+    if(Array.isArray(rec.clubIds))rec.clubIds=rec.clubIds.map(id=>globalId(area.id,id));
+  }
+  return p;
+}
+function globalMatch(match,defaultArea){
+  let m=copyData(match),a=defaultArea;
+  const teamId=(id,foreignArea)=>id?globalId(foreignArea||a,id):id;
+  const personId=(id,foreignArea)=>id?globalId(foreignArea||a,id):id;
+  m.id=globalId(a,m.id);
+  for(let key of ['homeTeamId','awayTeamId','winnerTeamId','nonAttendingTeamId'])if(m[key])m[key]=teamId(m[key]);
+  if(m.refereeId)m.refereeId=personId(m.refereeId);
+  m.appearances=(m.appearances||[]).map(app=>{
+    let x={...app},district=x.areaId||a;
+    if(x.teamId)x.teamId=teamId(x.teamId,district);
+    if(x.personId)x.personId=personId(x.personId,district);
+    delete x.areaId;return x;
+  });
+  m.events=(m.events||[]).map(e=>{
+    let x={...e},teamArea=x.teamAreaId||a,personArea=x.personAreaId||a;
+    if(x.teamId)x.teamId=teamId(x.teamId,teamArea);
+    for(let key of ['personId','playerId','inPersonId','outPersonId'])if(x[key])x[key]=personId(x[key],personArea);
+    delete x.teamAreaId;delete x.personAreaId;return x;
+  });
+  if(m.teamCards)m.teamCards=Object.fromEntries(Object.entries(m.teamCards).map(([id,card])=>[teamId(id),card]));
+  if(m.assistantReferees)m.assistantReferees=m.assistantReferees.map(x=>({...x,...(x.personId?{personId:personId(x.personId)}:{})}));
+  return m;
+}
+function globalCrossMatch(m){
+  let local=copyData(m),home=local.home,away=local.away;
+  let g=globalMatch({...local,homeTeamId:home.teamId,awayTeamId:away.teamId},home.areaId);
+  g.id='central::'+m.id;
+  g.homeTeamId=globalId(home.areaId,home.teamId);
+  g.awayTeamId=globalId(away.areaId,away.teamId);
+  g.homeName=home.name||g.homeName||home.teamId;
+  g.awayName=away.name||g.awayName||away.teamId;
+  g.appearances=(m.appearances||[]).map(x=>{
+    let a=copyData(x),area=a.areaId||home.areaId;
+    if(a.personId)a.personId=globalId(area,a.personId);
+    if(a.teamId)a.teamId=globalId(area,a.teamId);
+    delete a.areaId;return a;
+  });
+  g.events=(m.events||[]).map(x=>{
+    let e=copyData(x);
+    if(e.teamId)e.teamId=globalId(e.teamAreaId||home.areaId,e.teamId);
+    for(let key of ['personId','playerId','inPersonId','outPersonId'])if(e[key])e[key]=globalId(e.personAreaId||home.areaId,e[key]);
+    delete e.teamAreaId;delete e.personAreaId;return e;
+  });
+  if(m.teamCards){g.teamCards={};if(m.teamCards.home)g.teamCards[g.homeTeamId]=copyData(m.teamCards.home);if(m.teamCards.away)g.teamCards[g.awayTeamId]=copyData(m.teamCards.away)}
+  if(m.refereeAreaId&&m.refereeId)g.refereeId=globalId(m.refereeAreaId,m.refereeId);
+  if(m.winner)g.winnerTeamId=globalId(m.winner.areaId,m.winner.teamId);
+  if(m.nonAttending)g.nonAttendingTeamId=globalId(m.nonAttending.areaId,m.nonAttending.teamId);
+  delete g.home;delete g.away;delete g.winner;delete g.nonAttending;delete g.refereeAreaId;
+  return g;
+}
+async function buildAllAreasView(){
+  let all={schemaVersion:1,project:{name:'Alle Kreise',district:'Alle Kreise',regions:areas.map(a=>a.name)},
+    teams:[],people:[],matches:[],clubs:[],imports:[],personMerges:[],seasons:[],competitions:[]};
+  let seasons=new Map(),competitions=new Map();
+  for(let area of areas){
+    let data=await readAreaData(area.id);
+    for(let t of data.teams||[])all.teams.push(globalTeam(t,area));
+    for(let p of data.people||[])all.people.push(globalPerson(p,area));
+    for(let c of data.clubs||[])all.clubs.push(globalClub(c,area));
+    for(let m of data.matches||[]){
+      // In der kreisuebergreifenden Gesamtsicht die zentrale Begegnung zaehlen;
+      // ihre bereits vorhandene lokale Kopie bleibt im Backup erhalten.
+      if(crossLedger.some(cross=>sameCrossLocalFixture(m,cross,area.id,{[area.id]:data})))continue;
+      all.matches.push(globalMatch(m,area.id));
+    }
+    for(let seas of data.seasons||[])if(!seasons.has(seas.id))seasons.set(seas.id,copyData(seas));
+    for(let comp of data.competitions||[])if(!competitions.has(comp.id))competitions.set(comp.id,copyData(comp));
+  }
+  for(let m of crossLedger){
+    all.matches.push(globalCrossMatch(m));
+    let seasonId=m.season||seasonOfDate(m.date);
+    if(!seasons.has(seasonId))seasons.set(seasonId,{id:seasonId});
+  }
+  all.seasons=[...seasons.values()];all.competitions=[...competitions.values()];
+  return normalizeData(all);
+}
+function updateDistrictControls(){
+  $('#districtJump').value=activeAreaId;
+  const combined=activeAreaId===ALL_VIEW_ID;
+  $('#import').disabled=combined;
+  $('#export').disabled=combined;
+  $('#districtJump').disabled=scopeBusy;
+  // Gesamt-Backup bleibt in jeder Ansicht verfügbar.
+  $('#exportAll').disabled=scopeBusy;
+}
+
+function activeArea(){return areas.find(a=>a.id===activeAreaId)||STORMARN_AREA}
+function displayAreas(){updateDistrictControls()}
+function emptyAreaData(name){return {schemaVersion:1,project:{name,district:name,regions:[]},teams:[],people:[],matches:[],clubs:[],imports:[],personMerges:[],seasons:[{id:LEGACY_SEASON}],competitions:copyData(DEFAULT_COMPETITIONS)}}
+function areaImportCheck(data){
+  let source=(data.project?.district||data.project?.name||'').trim(),target=activeArea().name;
+  let canonical=s=>String(s).toLocaleLowerCase('de').normalize('NFKC').replace(/^(?:kfv|kreisfußballverband|kreisfussballverband|fußballkreis|fussballkreis|kreis)\s+/,'').replace(/[^\p{L}\p{N}]/gu,'');
+  if(source&&canonical(source)!==canonical(target))throw Error('Der Import ist für „'+source+'“ gekennzeichnet, ausgewählt ist aber „'+target+'“. Wechsle zuerst zum passenden Datenbereich.');
+  if(!source&&activeAreaId!=='stormarn'&&((data.teams||[]).length||(data.matches||[]).length||(data.people||[]).length))throw Error('Der Import enthält keinen Projektkreis. Bitte project.name und project.district in der JSON-Datei für „'+target+'“ ergänzen, damit Kreise nicht vermischt werden.');
+}
+async function activateArea(id){
+  if(scopeBusy||id===activeAreaId)return true;
+  if(id!==ALL_VIEW_ID&&!areas.some(a=>a.id===id))return false;
+  if(!storageReady){$('#status').textContent='Bereichswechsel benötigt eine verfügbare lokale Datenbank. Bitte zuerst JSON sichern.';displayAreas();return false}
+  const oldId=activeAreaId,oldDb=db,oldParked=parkedAreaId;
+  const prevStore=areas.find(a=>a.id===(oldId===ALL_VIEW_ID?parkedAreaId:oldId));
+  scopeBusy=true;updateDistrictControls();
+  try{
+    await localStore.queue.catch(()=>{});
+    if(oldId!==ALL_VIEW_ID)await localStore.write(persistableData(db));
+    if(id===ALL_VIEW_ID){
+      parkedAreaId=oldId;
+      db=await buildAllAreasView();
+      activeAreaId=ALL_VIEW_ID;
+    }else{
+      if(localStore.connection)localStore.connection.close();
+      localStore.connection=null;
+      let next=areas.find(a=>a.id===id);
+      await localStore.open(next.store);
+      let stored=await localStore.read();
+      const nextData=stored?normalizeData(stored):normalizeData(id==='stormarn'?copyData(seed):emptyAreaData(next.name));
+      if(!stored)await localStore.write(copyData(nextData));
+      db=nextData;activeAreaId=id;parkedAreaId=id;refreshCrossView();
+      if(id==='stormarn')ensureStandaloneClubs();
+    }
+    $('#search').value='';$('#region').value='';$('#venue').value='all';$('#period').value='season';
+    $('#gender').value='M';gender='M';$('#ageClass').value='';
+    $('#direction').value='desc';$('#sort').value='';chosenCompetitions=['league'];
+    syncAgeOptions();syncSeasonOptions();syncCompetitions();displayAreas();render();
+    $('#status').textContent=id===ALL_VIEW_ID
+      ?'Alle fünf Kreise: gemeinsame, schreibgeschützte Auswertung. Kreisduelle zählen als eine Begegnung. Zum Importieren bitte einen Kreis wählen.'
+      :'Datenbereich geladen: '+areas.find(a=>a.id===id).name+'.';
+    return true;
+  }catch(e){
+    storageError=(e.name||'Fehler')+': '+e.message;
+    try{if(localStore.connection)localStore.connection.close();localStore.connection=null;await localStore.open(prevStore.store)}catch(err){storageReady=false}
+    db=oldDb;activeAreaId=oldId;parkedAreaId=oldParked;displayAreas();
+    $('#status').textContent='Bereichswechsel fehlgeschlagen: '+storageError+'. Bestehende Daten wurden nicht verändert.';
+    return false;
+  }finally{scopeBusy=false;updateDistrictControls()}
+}
+$('#districtJump').addEventListener('change',e=>activateArea(e.target.value));
+displayAreas();
+
+// Sichtbarkeit aller Vereine auch ohne Projektmannschaft. Bestehende lokale Einträge werden niemals überschrieben.
+function ensureStandaloneClubs(){
+ if(activeAreaId!=='stormarn')return;
+ let known=new Set(db.clubs.map(c=>c.id)),baseProjectIds=new Set(seed.teams.filter(t=>t.project!==false).flatMap(t=>t.clubIds||[]));
+ for(let c of seed.clubs||[])if(!baseProjectIds.has(c.id)&&!known.has(c.id)){
+  db.clubs.push(copyData(c));known.add(c.id);
+ }
+}
+ensureStandaloneClubs();
+refreshCrossView();
+
+async function save(){try{if(activeAreaId===ALL_VIEW_ID)return true;if(!storageReady)throw Error(storageError||'Datenbank nicht verfügbar');await localStore.write(persistableData(db));$('#status').textContent='Lokal in der Datenbank gespeichert · zusätzlich JSON sichern.';return true}catch(e){storageError=(e.name||'Fehler')+': '+e.message;$('#status').textContent='Speichern fehlgeschlagen. Bitte Daten jetzt als JSON sichern.';return false}}
+
+function range(){if(allTime()&&$('#period').value==='season')return ['0000-01-01','9999-12-31'];let p=$('#period').value;return p==='season'?[selectedSeason().slice(0,4)+'-07-01',(Number(selectedSeason().slice(0,4))+1)+'-06-30']:p==='custom'?[$('#from').value,$('#to').value]:[p+'-01',p+'-31']}
+let chosenCompetitions=['league'];try{let saved=JSON.parse(localStorage.getItem('am-ball-project59-competitions-v1'));if(Array.isArray(saved))chosenCompetitions=[...new Set(saved)]}catch(e){}
+function competitionSelection(){return chosenCompetitions.filter(id=>competitionDefinitions().some(c=>c.id===id))}
+function competitionLabel(){let cs=competitionSelection(),available=competitionDefinitions();return cs.length===available.length&&cs.length?'Gesamt (alle Wettbewerbe)':cs.length?cs.map(id=>competitionById(id)?.name||id).join(' + '):'Kein Wettbewerb ausgewählt'}
+function competitionMatches(m){return competitionSelection().includes(matchCompetitionId(m))}
+// Der Altbestand enthält aggregierte Liga-Werte nur für die historische ID "league".
+function leagueBaseline(){return competitionSelection().includes('league')}
+function setCompetitions(keys){chosenCompetitions=[...new Set(keys.filter(id=>competitionDefinitions().some(c=>c.id===id)))];try{localStorage.setItem('am-ball-project59-competitions-v1',JSON.stringify(chosenCompetitions))}catch(e){}syncCompetitions();render()}
+function syncCompetitions(){chosenCompetitions=competitionSelection();$('#competitionOptions').innerHTML=competitionDefinitions().map(c=>`<button type="button" data-competition="${esc(c.id)}" aria-pressed="${chosenCompetitions.includes(c.id)}" title="${esc(c.name)}">${esc(c.name)}</button>`).join('')||'<span class="empty-competitions">Keine aktiven Wettbewerbe vorhanden. Über JSON ergänzen.</span>';$('#competitionSummary').textContent=competitionLabel()}
+function matches(){let [a,b]=range();return db.matches.filter(m=>inSelectedSeason(m)&&m.date>=a&&m.date<=b&&m.status==='played'&&competitionMatches(m))}
+function isAwarded(m){return m.status==='awarded'&&['non_attendance','administrative_decision'].includes(m.decision)}
+function awardLabel(m){return m.decision==='non_attendance'?'Nichtantritt '+(m.nonAttendingTeamId===m.homeTeamId?'Heim':'Gast'):'Verwaltungsentscheid'}
+function officialAwardText(m){return m.officialAward?`Offizielle Wertung ${m.officialAward.homeGoals}:${m.officialAward.awayGoals} (keine sportlichen Tore)`:''}
+function awardedMatches(){let [a,b]=range();return db.matches.filter(m=>inSelectedSeason(m)&&m.date>=a&&m.date<=b&&isAwarded(m)&&competitionMatches(m))}
+function resultMatches(){return [...matches(),...awardedMatches()]}
+function resultCount(s){return s.played+(s.awardedWins||0)+(s.awardedLosses||0)}
+function administrativeText(s){let total=(s.awardedWins||0)+(s.awardedLosses||0);return total?` · ${s.awardedWins||0} administrative Siege / ${s.awardedLosses||0} administrative Niederlagen`:''}
+function counted(m){return !m.inBaseline&&(matchCompetitionId(m)!=='league'||!(db.seasons.find(s=>s.id===m.season)?.baselineDate)||m.date>db.seasons.find(s=>s.id===m.season).baselineDate)}
+function venueMatches(entity){let venue=$('#venue')?.value||'all',ms=tab==='teams'?resultMatches():matches();if(tab!=='teams'||venue==='all')return ms;return ms.filter(m=>venue==='home'?m.homeTeamId===entity.id:m.awayTeamId===entity.id)}
+function selectedRegion(){return ['teams','coach','keeper','player'].includes(tab)?($('#region')?.value||''):''}
+function regionTeam(id){if(!teamMatchesCategory(seasonTeams().find(t=>t.id===id)))return false;return !selectedRegion()||seasonTeams().some(t=>t.id===id&&t.project!==false&&t.region===selectedRegion())}
+function personRegions(e){let out=new Set();for(let m of db.matches.filter(inSelectedSeason))for(let a of m.appearances||[])if(a.personId===e.id&&a.role===e.role&&a.played){let t=seasonTeams().find(t=>t.id===a.teamId&&t.project!==false);if(t?.region)out.add(t.region)}let clean=v=>v.trim().replace(/\s+(?:III|II|D)(?:\s*\(.*\))?$/,'').trim();for(let club of (e.club||'').split('/'))for(let t of seasonTeams())if(t.project!==false&&clean(t.club||'')===clean(club)&&clean(club)&&t.region)out.add(t.region);return [...out]}
+function regionPerson(e){return !selectedRegion()||personRegions(e).includes(selectedRegion())}
+function regionalBaseline(e){return !selectedRegion()||tab==='teams'||(personRegions(e).length===1&&personRegions(e)[0]===selectedRegion())}
+function matchOutcome(m,teamId){if(isAwarded(m))return ![m.homeTeamId,m.awayTeamId].includes(teamId)?0:m.winnerTeamId===teamId?1:-1;let home=m.homeTeamId===teamId,gf=home?m.homeGoals:m.awayGoals,ga=home?m.awayGoals:m.homeGoals;if(m.competitionType==='cup'&&m.decision==='penalty_shootout'&&gf===ga&&[m.homeTeamId,m.awayTeamId].includes(m.winnerTeamId))return m.winnerTeamId===teamId?1:-1;return gf>ga?1:gf<ga?-1:0}
+function appearanceOwnGoals(m,a){if(Number.isInteger(a.ownGoals)&&a.ownGoals>=0)return a.ownGoals;return (m.events||[]).filter(e=>(e.type==='ownGoal'||e.ownGoal===true)&&e.personId===a.personId).length}
+function ownGoalTotal(e){let total=0;for(let m of matches())for(let a of m.appearances||[])if(a.personId===e.id&&a.role===e.role&&a.played&&regionTeam(a.teamId))total+=appearanceOwnGoals(m,a);return total}
+function coreStats(entity){entity=seasonEntity(entity);let season=$('#period').value==='season'&&(tab!=='teams'||($('#venue')?.value||'all')==='all'),s={played:0,wins:0,draws:0,losses:0,points:0,gf:0,ga:0,goals:0,weightedGoals:0,clean:0,...(season&&leagueBaseline()&&regionalBaseline(entity)&&categoryBaseline(entity)?entity.baseline:{})};s.awardedWins=0;s.awardedLosses=0;s.ownGoals=ownGoalTotal(entity);for(let m of venueMatches(entity)){if(season&&!counted(m))continue;let home=m.homeTeamId===entity.id,away=m.awayTeamId===entity.id;if(tab==='teams'&&(home||away)){if(isAwarded(m)){let result=matchOutcome(m,entity.id);s.wins+=result===1;s.losses+=result===-1;s.awardedWins+=result===1;s.awardedLosses+=result===-1;s.points+=result===1?3:0;continue}let gf=home?m.homeGoals:m.awayGoals,ga=home?m.awayGoals:m.homeGoals;s.played++;s.gf+=gf;s.ga+=ga;let result=matchOutcome(m,tab==='teams'?entity.id:p.teamId);s.wins+=result===1;s.draws+=result===0;s.losses+=result===-1;s.points+=result===1?3:result===0?1:0}else if(tab!=='teams'){for(let p of m.appearances||[]){if(p.personId!==entity.id||p.role!==entity.role||!p.played||!regionTeam(p.teamId))continue;s.played++;s.goals+=n(p.goals);let t=seasonTeams().find(t=>t.id===p.teamId);s.weightedGoals+=n(p.goals)*(t?.weight||1);if(entity.role==='keeper'){s.ga+=n(p.goalsAgainst);s.clean+=p.cleanSheet===true?1:0}if(entity.role==='coach'){let h=p.teamId===m.homeTeamId,gf=h?m.homeGoals:m.awayGoals,ga=h?m.awayGoals:m.homeGoals;s.gf+=gf;s.ga+=ga;let result=matchOutcome(m,tab==='teams'?entity.id:p.teamId);s.wins+=result===1;s.draws+=result===0;s.losses+=result===-1;s.points+=result===1?3:result===0?1:0}}}}return s}
+function sumSeasonStats(rows){let out={};for(let row of rows)for(let [key,value] of Object.entries(row))if(typeof value==='number')out[key]=(out[key]||0)+value;out.assists=rows.some(r=>r.assists!==null&&r.assists!==undefined)?rows.reduce((n,r)=>n+(r.assists||0),0):null;return out}
+function stats(entity){if(!allTime())return singleSeasonStats(entity);let original=[...db.teams,...db.people].find(e=>e.id===entity.id)||entity;return sumSeasonStats(db.seasons.filter(s=>original.seasons?.[s.id]).map(s=>withinSeason(s.id,()=>singleSeasonStats(original))))}
+function singleSeasonStats(entity){let s=coreStats(entity),e=seasonEntity(entity),useBaseline=$('#period').value==='season'&&leagueBaseline()&&regionalBaseline(e)&&categoryBaseline(e);s.assists=null;s.assistsKnownAppearances=0;if(useBaseline&&Number.isInteger(e.baseline?.assists))s.assists=e.baseline.assists;for(let m of venueMatches(e)){if($('#period').value==='season'&&!counted(m))continue;for(let a of m.appearances||[])if(a.personId===e.id&&a.role===e.role&&a.played&&regionTeam(a.teamId)&&Number.isInteger(a.assists)){s.assists=(s.assists??0)+a.assists;s.assistsKnownAppearances++}}return s}
+function validateAssists(d){let check=(obj,id)=>{if(obj&&obj.assists!==undefined&&obj.assists!==null&&(!Number.isSafeInteger(obj.assists)||obj.assists<0))throw Error('Vorlagen müssen eine nichtnegative ganze Zahl sein: '+id)};for(let m of d.matches||[])for(let a of m.appearances||[])check(a,m.id);for(let p of d.people||[]){check(p.baseline,p.id);for(let rec of Object.values(p.seasons||{}))check(rec.baseline,p.id)}}
+function cardStats(id){let ms=venueMatches({id}).filter(m=>m.status==='played').filter(m=>m.homeTeamId===id||m.awayTeamId===id),out={yellow:0,yellowRed:0,red:0,known:0,total:ms.length};for(let m of ms){let c=m.teamCards?.[id];if(!c)continue;out.known++;for(let k of ['yellow','yellowRed','red'])out[k]+=c[k]}return out}
+function cardText(id){let c=cardStats(id);return c.known?`Gelb ${c.yellow} · Gelb-Rot ${c.yellowRed} · Rot ${c.red} (${c.known}/${c.total} Spiele erfasst; ohne Karten-Altbestand)`:'Karten: noch nicht erfasst'}
+function captainStats(id){let out={count:0,known:0,total:0};for(let m of matches()){let ps=(m.appearances||[]).filter(p=>p.personId===id&&p.played&&p.role!=='coach'&&regionTeam(p.teamId));if(!ps.length)continue;out.total++;if(ps.some(p=>typeof p.captain==='boolean'))out.known++;if(ps.some(p=>p.captain===true))out.count++}return out}
+function captainText(id){let c=captainStats(id);return c.known?`${c.count}× Kapitän (${c.known}/${c.total} Einzeleinsätze geprüft)`:'Kapitän: noch nicht erfasst'}
+function sortOptions(){let common=[['played','Spiele / Einsätze'],['wins','Siege'],['draws','Unentschieden'],['losses','Niederlagen'],['points','Punkte'],['ppg',tab==='teams'?'Punkte / Wertung':'Punkte / Spiel'],['gf','Tore'],['ga','Gegentore'],['difference','Tordifferenz'],['winrate','Siegquote (%)']];let cards=[['yellow','Gelbe Karten'],['yellowRed','Gelb-Rote Karten'],['red','Rote Karten']];let o=tab==='teams'?[['ppg',tab==='teams'?'Punkte / Wertung':'Punkte / Spiel'],...common.filter(x=>x[0]!=='ppg'),['off','Gewichtete Offensive'],['def','Gewichtete Defensive'],...cards]:tab==='coach'?[['ppg',tab==='teams'?'Punkte / Wertung':'Punkte / Spiel'],...common.filter(x=>x[0]!=='ppg'),['off','Offensive'],['def','Defensive']]:tab==='player'?[['goals','Tore'],['assists','Vorlagen (belegt)'],['ownGoals','Eigentore (dokumentiert)'],['played','Einsätze'],['weighted','Gewichtete Tore'],['goalrate','Tore / Einsatz'],['weightedrate','Gewichtete Tore / Einsatz'],['captain','Kapitänseinsätze']]:tab==='referee'?[['total','Einsätze gesamt'],['played','Spielleitungen'],['assisted','Assistenzen'],['cardsTotal','Karten gesamt'],...cards,['gf','Tore in den Spielen'],['goalrate','Tore / Spiel']]:[['clean','Zu null'],['assists','Vorlagen (belegt)'],['goals','Tore'],['ownGoals','Eigentore (dokumentiert)'],['played','Einsätze'],['ga','Gegentore'],['gaPerGame','Gegentore / Spiel'],['cleanrate','Zu-null-Quote (%)'],['captain','Kapitänseinsätze']];return [...o,['name','Name (alphabetisch)']]}
+function metric(e,s){let k=$('#sort').value;if(k==='assists')return s.assists===null?NaN:s.assists;if(k==='name')return e.name;if(tab==='referee'){if(k==='cardsTotal')return s.cardGames?s.yellow+s.red+s.yellowRed:NaN;if(['yellow','yellowRed','red'].includes(k))return s.cardGames?s[k]:NaN;if(k.endsWith('Rate'))return s.cardGames?s[k.slice(0,-4)]/s.cardGames:NaN;if(k==='goalrate')return s.gf/s.played;if(k==='gf')return s.played?s.gf:NaN;return n(s[k])}if(k==='captain'){let c=captainStats(e.id);return c.known?c.count:NaN}if(['yellow','yellowRed','red'].includes(k)){let c=cardStats(e.id);return c.known?c[k]:NaN}return k==='ppg'?s.points/resultCount(s):k==='winrate'?100*s.wins/resultCount(s):k==='off'?s.gf/s.played*(tab==='teams'?e.weight:1):k==='def'?s.ga/s.played/(tab==='teams'?e.weight:1):k==='weighted'?s.weightedGoals:k==='gaPerGame'?s.ga/s.played:k==='difference'?s.gf-s.ga:k==='goalrate'?s.goals/s.played:k==='weightedrate'?s.weightedGoals/s.played:k==='cleanrate'?100*s.clean/s.played:n(s[k])}
+function compareRows(a,b){let av=metric(a.e,a.s),bv=metric(b.e,b.s),asc=$('#direction').value==='asc';if(typeof av==='string')return (asc?1:-1)*av.localeCompare(bv,'de');if(!Number.isFinite(av)&&!Number.isFinite(bv))return a.e.name.localeCompare(b.e.name,'de');if(!Number.isFinite(av))return 1;if(!Number.isFinite(bv))return -1;return (asc?av-bv:bv-av)||a.e.name.localeCompare(b.e.name,'de')}
+function eligibleRefMatches(){return matches().filter(m=>seasonTeams().some(t=>t.id===m.homeTeamId&&t.project!==false&&teamMatchesCategory(matchTeam(t.id,m))))}
+function refereeRows(){let groups=new Map();for(let m of eligibleRefMatches()){
+let duties=[];if(m.refereeId||m.referee)duties.push({id:m.refereeId||'unresolved:'+m.id,name:seasonPeople().find(p=>p.id===m.refereeId)?.name||m.referee||'Unbekannter Schiedsrichter',duty:'main'});
+for(let a of m.assistantReferees||[])duties.push({id:a.personId,name:seasonPeople().find(p=>p.id===a.personId)?.name||a.name||'Unbekannter Assistent',duty:'assistant',position:a.position});
+let seen=new Set();for(let duty of duties){if(!duty.id||seen.has(duty.id))continue;seen.add(duty.id);let r=groups.get(duty.id);if(!r){r={e:{id:duty.id,name:duty.name,role:'referee'},s:{played:0,assisted:0,total:0,gf:0,yellow:0,yellowRed:0,red:0,cardGames:0},matches:[],duties:[]};groups.set(duty.id,r)}r.matches.push(m);r.duties.push({...duty,match:m});r.s.total++;if(duty.duty==='assistant'){r.s.assisted++;continue}r.s.played++;r.s.gf+=m.homeGoals+m.awayGoals;let h=m.teamCards?.[m.homeTeamId],a=m.teamCards?.[m.awayTeamId];if(h&&a){r.s.cardGames++;for(let k of ['yellow','yellowRed','red'])r.s[k]+=h[k]+a[k]}}}return [...groups.values()]}
+function refereeSummaryTiles(v){let card=k=>v.cardGames?fmt(v[k]):'Nicht erfasst',rows=[[['Einsätze',fmt(v.played)],['Tore in gepfiffenen Spielen',fmt(v.gf)]],[['Spielleitungen',fmt(v.played)],['Assistenzen',fmt(v.assisted)]],[['Karten gesamt',v.cardGames?fmt(v.yellow+v.red+v.yellowRed):'Nicht erfasst'],['Gelbe Karten',card('yellow')]],[['Rote Karten',card('red')],['Gelb-Rote Karten',card('yellowRed')]]];return '<div class="team-profile-stats referee-profile-stats">'+rows.map(row=>'<div class="team-stat-row" style="--columns:2">'+row.map(([label,value])=>`<div class="team-stat-cell"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')+'</div>').join('')+'</div>'}
+function refereeProfile(id){let r=refereeRows().find(r=>r.e.id===id);if(!r)return;let v=r.s;show(r.e.name,`<p class="detail-context">${esc(seasonLabel())} · ${esc(competitionLabel())}</p>`+refereeSummaryTiles(v)+'<h3>Erfasste Einsätze</h3>'+r.duties.map(d=>`<button class="game" data-game="${esc(d.match.id)}">${esc(gameLabel(d.match))}<small>${d.duty==='main'?'Spielleitung':esc(d.position+'. Assistent')}</small></button>`).join(''));bindGames()}
+function decimalValue(x){return Number.isFinite(x)?x.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2}):'–'}
+function percentValue(x){return Number.isFinite(x)?Math.round(x).toLocaleString('de-DE'):'–'}
+function rankingValue(e,s){let k=$('#sort').value,v=metric(e,s);return ['winrate','cleanrate'].includes(k)?percentValue(v):['ppg','off','def','goalrate','weightedrate','gaPerGame','yellowRate','yellowRedRate','redRate'].includes(k)?decimalValue(v):fmt(v)}
+function rankingKpis(s,role){let items=role==='teams'?[['Spiele',s.played],['Punkte',s.points],['Siegquote',percentValue(100*s.wins/resultCount(s))+(resultCount(s)?' %':'')],['Torverhältnis',s.gf+':'+s.ga]]:role==='referee'?[['Einsätze gesamt',s.total],['Spielleitungen',s.played],['Assistenzen',s.assisted],['Karten gesamt',s.cardGames?s.yellow+s.yellowRed+s.red:'–']]:role==='coach'?[['Einsätze',s.played],['Punkte / Spiel',decimalValue(s.points/resultCount(s))],['Siegquote',percentValue(100*s.wins/resultCount(s))+(resultCount(s)?' %':'')],['Torverhältnis',s.gf+':'+s.ga]]:role==='keeper'?[['Einsätze',s.played],['Zu-null-Quote',s.played?percentValue(100*s.clean/s.played)+' %':'–'],['Ohne Gegentor',s.clean],['Gegentore / Spiel',s.played?decimalValue(s.ga/s.played):'–']]:[['Einsätze',s.played],['Tore',s.goals],['Vorlagen',s.assists===null?'–':s.assists],['Eigentore',s.ownGoals]];return '<span class="ranking-kpis">'+items.map(([label,value])=>`<span><small>${esc(label)}</small><b>${esc(value)}</b></span>`).join('')+'</span>'}
+function playerRankingRow(e,s,i){return `<button class="row player-ranking" data-id="${esc(e.id)}" ${tab==='teams'?colorStyle(e):''}><span class="rank">${i+1}</span><span class="player-identity"><span class="person-heading ${['player','keeper','coach'].includes(e.role)&&tab!=='teams'?'codes-below':''}"><strong>${esc(e.name)}</strong><span class="person-codes">${tab==='teams'?abbreviationBadge(e.shortName):e.role==='referee'?'':personAbbreviations(e)}</span></span>${tab==='teams'&&e.league?`<small class="team-league">${esc(e.league)}</small>`:''}</span>${rankingKpis(s,tab==='teams'?'teams':e.role)}<b class="ranking-value">${$('#sort').value==='name'?'':rankingValue(e,s)}</b></button>`}
+
+function render(){syncProject();syncDetailed();document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='clubs'){renderClubs();return}if($('#sort').dataset)$('#sort').dataset.view=tab;$('#competitionInfo').hidden=true;$('#competitionInfo').textContent=leagueBaseline()?'Die Auswahl enthält das bisherige Ligensystem: In der Saisonansicht zählen die Liga-Altsummen und die zusätzlich dokumentierten Spiele der ausgewählten Wettbewerbe.':'Es zählen ausschließlich dokumentierte Spiele der ausgewählten Wettbewerbe. Ohne Auswahl werden keine Spiele berücksichtigt. Punkte dienen bei Pokalen dem Vergleich nach 3/1/0.';$('#minimumWrap').hidden=!['coach','keeper','player'].includes(tab);$('#region').hidden=!['teams','coach','keeper','player'].includes(tab);$('#venue').hidden=tab!=='teams';$('#coverage').hidden=!(tab==='teams'&&$('#venue').value!=='all');document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));$('#custom').hidden=$('#period').value!=='custom';$('#summary').textContent=`${seasonTeams().filter(t=>t.project!==false).length} Projektmannschaften\n${seasonPeople().length} Personen-Datensätze\n${db.matches.length} Begegnungen`;let opts=sortOptions(),old=$('#sort').value;$('#sort').innerHTML=opts.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');if(opts.some(o=>o[0]===old))$('#sort').value=old;
+if(tab==='archive'||tab==='recap'){renderGames();return}let q=$('#search').value.toLowerCase(),list=tab==='referee'?refereeRows():(tab==='teams'?seasonTeams().filter(t=>t.project!==false&&(!$('#region').value||t.region===$('#region').value)):seasonPeople().filter(p=>p.role===tab&&regionPerson(p))).filter(e=>(tab==='teams'?teamMatchesCategory(e):personMatchesCategory(e))).map(e=>({e,s:stats(e)}));list=list.filter(({e})=>(e.name+' '+(e.shortName||'')+' '+(e.club||'')+' '+(e.aliases||[]).join(' ')).toLowerCase().includes(q));if(tab!=='referee'&&($('#period').value!=='season'||!leagueBaseline()||(tab==='teams'&&$('#venue').value!=='all')))list=list.filter(x=>resultCount(x.s)>0);if(['coach','keeper','player'].includes(tab)&&$('#minimum').checked)list=list.filter(x=>x.s.played>=minimumThreshold());if(['player','keeper'].includes(tab)&&$('#sort').value==='ownGoals')list=list.filter(x=>x.s.ownGoals>0);list.sort(compareRows);$('#content').innerHTML=(tab==='teams'?'<p class="note">Nichtantritte und Verwaltungsentscheide zählen separat als administrative Siege und Niederlagen. Spiele, Tore, Karten sowie Offensive und Defensive beziehen sich auf ausgetragene Spiele. Punkte pro Wertung und Siegquote berücksichtigen ausgetragene Spiele und administrative Entscheidungen.</p>':'')+(selectedRegion()&&tab!=='teams'?'<p class="note">Region nach zugehörigen Mannschaften. Einzelspiele zählen nur für Mannschaften dieser Region. Altwerte werden nur bei eindeutiger regionaler Zuordnung berücksichtigt; nicht aufteilbare Altwerte bleiben in dieser Auswahl unberücksichtigt. Unter Alle Gebiete steht die gesamte Statistik.</p>':'')+(tab==='referee'?'<p class="note">Nur Heimspiele der Projektmannschaften. Spielleitungen und Assistenzen zählen getrennt. Karten- und Torstatistiken gelten ausschließlich für eigene Spielleitungen; Karten benötigen vollständige Angaben beider Teams.</p>':'')+(list.length?list.map(({e,s},i)=>['teams','player','keeper','coach','referee'].includes(tab)?playerRankingRow(e,s,i):`<button class="row" data-id="${esc(e.id)}" ${tab==='teams'?colorStyle(e):''}><span class="rank">${i+1}</span><span><strong>${esc(e.name)}</strong><small>${tab==='referee'?`${s.total} Einsätze · ${s.played} Spielleitungen · ${s.assisted} Assistenzen`:`${tab==='teams'?abbreviationBadge(e.shortName):personAbbreviations(e)} ${esc(e.league||e.club)} · ${s.played} Einsätze${tab==='teams'?` · ${s.gf}:${s.ga} Tore${administrativeText(s)} · ${cardText(e.id)}`:tab==='player'?` · ${s.goals} Tore · ${s.ownGoals} Eigentore · ${captainText(e.id)}`:tab==='keeper'?` · ${s.clean} zu null · ${s.goals} Tore · ${s.ownGoals} Eigentore · ${captainText(e.id)}`:''}`}</small></span><b>${$('#sort').value==='name'?'':rankingValue(e,s)}</b></button>`).join(''):'<div class="empty">Für diese Auswahl sind noch keine passenden Daten erfasst. Prüfe Wettbewerb, Zeitraum und Mindestanzahl der Einsätze.</div>');document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>tab==='referee'?refereeProfile(b.dataset.id):profile(b.dataset.id))}
+function gameLabel(m){if(isAwarded(m)){let home=m.homeName||seasonTeams().find(t=>t.id===m.homeTeamId)?.name||'Heim',away=m.awayName||seasonTeams().find(t=>t.id===m.awayTeamId)?.name||'Gast';return `${m.date} · ${home} – ${away} · ${awardLabel(m)} · ${m.winnerTeamId===m.homeTeamId?home:away} administrativer Sieger${m.officialAward?' · '+officialAwardText(m):''}`}return `${m.date} · ${m.homeName||seasonTeams().find(t=>t.id===m.homeTeamId)?.name||'Extern'} ${m.homeGoals}:${m.awayGoals} ${m.awayName||seasonTeams().find(t=>t.id===m.awayTeamId)?.name||'Extern'}${m.decision==='penalty_shootout'?` · ${m.shootoutHomeGoals}:${m.shootoutAwayGoals} i. E.`:''}`}
+function show(title,body){$('#detailTitle').textContent=title;$('#detailBody').innerHTML=body;$('#dialog').showModal()}
+function teamBreakdown(e){let groups={};for(let m of matches())for(let p of m.appearances||[]){if(p.personId!==e.id||p.role!==e.role||!p.played||!regionTeam(p.teamId))continue;let g=groups[p.teamId]??={played:0,goals:0,captain:0,captainKnown:0,wins:0,draws:0,losses:0,points:0,gf:0,ga:0,numbers:new Set()};g.played++;g.ownGoals=(g.ownGoals||0)+appearanceOwnGoals(m,p);g.goals+=n(p.goals);g.captain+=p.captain===true?1:0;g.captainKnown+=typeof p.captain==='boolean'?1:0;if(p.shirtNumber!=null)g.numbers.add(p.shirtNumber);if(e.role==='coach'){let h=m.homeTeamId===p.teamId,gf=h?m.homeGoals:m.awayGoals,ga=h?m.awayGoals:m.homeGoals;g.gf+=gf;g.ga+=ga;let result=matchOutcome(m,p.teamId);g.wins+=result===1;g.draws+=result===0;g.losses+=result===-1;g.points+=result===1?3:result===0?1:0}}return groups}
+function resultSplit(id){let blank=()=>({played:0,wins:0,draws:0,losses:0,points:0,gf:0,ga:0,awardedWins:0,awardedLosses:0}),out={home:blank(),away:blank()};for(let m of resultMatches()){if(![m.homeTeamId,m.awayTeamId].includes(id))continue;let h=m.homeTeamId===id,g=out[h?'home':'away'],result=matchOutcome(m,id);g.wins+=result===1;g.draws+=result===0;g.losses+=result===-1;g.points+=result===1?3:result===0?1:0;if(isAwarded(m)){g.awardedWins+=result===1;g.awardedLosses+=result===-1;continue}g.played++;g.gf+=h?m.homeGoals:m.awayGoals;g.ga+=h?m.awayGoals:m.homeGoals}return out}
+function baselineTeamDetails(){return ''}
+function detailTiles(items){return '<div class="club-detail-grid stat-tiles">'+items.map(([label,value])=>`<div><small>${esc(label)}</small><strong>${typeof value==='number'?(label.includes('(%)')?percentValue(value):label.includes(' / ')?decimalValue(value):fmt(value)):esc(value)}</strong></div>`).join('')+'</div>'}
+function teamSummaryTiles(s,id){let c=cardStats(id),rows=[[
+ ['Spiele',fmt(s.played)],['Eingesetzte Spieler',teamUsedPlayers(id).length,'players']
+],[['Punkte',fmt(s.points)],['Siege',fmt(s.wins)]],[['Unentschieden',fmt(s.draws)],['Niederlagen',fmt(s.losses)]],[['Tore',fmt(s.gf)],['Gegentore',fmt(s.ga)],['Differenz',fmt(s.gf-s.ga)]],[['Punktedurchschnitt',decimalValue(s.points/resultCount(s))],['Siegquote',resultCount(s)?percentValue(100*s.wins/resultCount(s))+' %':'–']],[['Gelbe Karten',c.known?fmt(c.yellow):'Nicht erfasst'],['Rote Karten',c.known?fmt(c.red):'Nicht erfasst'],['Gelb-Rote Karten',c.known?fmt(c.yellowRed):'Nicht erfasst']]];let html='<div class="team-profile-stats">'+rows.map(row=>'<div class="team-stat-row" style="--columns:'+row.length+'">'+row.map(([label,value,action])=>action?`<button type="button" class="team-stat-cell team-players-tile" data-team-players="${esc(id)}" data-player-season="${esc(selectedSeason())}"><small>${esc(label)}</small><strong>${esc(value)}</strong></button>`:`<div class="team-stat-cell"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')+'</div>').join('')+'</div>';if(s.awardedWins||s.awardedLosses)html+=detailTiles([['Administrative Siege',s.awardedWins||0],['Administrative Niederlagen',s.awardedLosses||0]]);return html}
+function coachSummaryTiles(s){let rows=[[['Einsätze',fmt(s.played)],['Punkte',fmt(s.points)]],[['Siege',fmt(s.wins)],['Unentschieden',fmt(s.draws)],['Niederlagen',fmt(s.losses)]],[['Tore',fmt(s.gf)],['Gegentore',fmt(s.ga)],['Differenz',fmt(s.gf-s.ga)]],[['Punktedurchschnitt',decimalValue(s.points/resultCount(s))],['Siegquote',resultCount(s)?percentValue(100*s.wins/resultCount(s))+' %':'–']]];let html='<div class="team-profile-stats coach-profile-stats">'+rows.map(row=>'<div class="team-stat-row" style="--columns:'+row.length+'">'+row.map(([label,value])=>`<div class="team-stat-cell"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')+'</div>').join('')+'</div>';if(s.awardedWins||s.awardedLosses)html+=detailTiles([['Administrative Siege',s.awardedWins||0],['Administrative Niederlagen',s.awardedLosses||0]]);return html}
+function playerSummaryTiles(s,id){let c=captainStats(id),rows=[[['Einsätze',fmt(s.played)],['Kapitän',c.known?fmt(c.count):'Nicht erfasst']],[['Tore',fmt(s.goals)],['Vorlagen',s.assists===null?'Nicht erfasst':fmt(s.assists)],['Eigentore',fmt(s.ownGoals)]],[['Tore / Einsatz',decimalValue(s.goals/s.played)],['Gewichtete Tore',decimalValue(s.weightedGoals)]]];return '<div class="team-profile-stats player-profile-stats">'+rows.map(row=>'<div class="team-stat-row" style="--columns:'+row.length+'">'+row.map(([label,value])=>`<div class="team-stat-cell"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')+'</div>').join('')+'</div>'}
+function keeperSummaryTiles(s,id){let c=captainStats(id),rows=[[['Einsätze',fmt(s.played)],['Kapitän',c.known?fmt(c.count):'Nicht erfasst']],[['Tore',fmt(s.goals)],['Vorlagen',s.assists===null?'Nicht erfasst':fmt(s.assists)],['Eigentore',fmt(s.ownGoals)]],[['Gegentore',fmt(s.ga)],['Gegentore / Spiel',decimalValue(s.ga/s.played)]],[['Spiele zu null',fmt(s.clean)],['Zu-null-Quote',s.played?percentValue(100*s.clean/s.played)+' %':'–']]];return '<div class="team-profile-stats keeper-profile-stats">'+rows.map(row=>'<div class="team-stat-row" style="--columns:'+row.length+'">'+row.map(([label,value])=>`<div class="team-stat-cell"><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')+'</div>').join('')+'</div>'}
+function summaryTiles(s,role,id){if(role==='keeper')return keeperSummaryTiles(s,id);if(role==='player')return playerSummaryTiles(s,id);if(role==='coach')return coachSummaryTiles(s);if(role==='teams')return teamSummaryTiles(s,id);if(role==='teams'||role==='coach'){let items=[['Einsätze',s.played],['Punkte',s.points],['Siege',s.wins],['Unentschieden',s.draws],['Niederlagen',s.losses],['Tore',s.gf],['Gegentore',s.ga],['Tordifferenz',s.gf-s.ga],['Punkte / Wertung',s.points/resultCount(s)],['Siegquote (%)',100*s.wins/resultCount(s)]];if(s.awardedWins||s.awardedLosses)items.push(['Administrative Siege',s.awardedWins||0],['Administrative Niederlagen',s.awardedLosses||0]);if(role==='teams'){let c=cardStats(id);items.push(['Gelbe Karten',c.known?c.yellow:'Nicht erfasst'],['Gelb-Rote Karten',c.known?c.yellowRed:'Nicht erfasst'],['Rote Karten',c.known?c.red:'Nicht erfasst'])}return detailTiles(items)}let items=[['Einsätze',s.played],['Tore',s.goals],['Vorlagen (belegt)',s.assists===null?'Nicht erfasst':s.assists],['Eigentore (belegt)',s.ownGoals],['Tore / Einsatz',s.goals/s.played]];if(role==='keeper')items.push(['Zu null',s.clean],['Gegentore',s.ga],['Gegentore / Einsatz',s.ga/s.played],['Zu-null-Quote (%)',100*s.clean/s.played]);if(role==='player')items.push(['Gewichtete Tore',s.weightedGoals]);let c=captainStats(id);items.push(['Kapitän (belegt)',c.known?c.count:'Nicht erfasst']);return detailTiles(items)}
+function teamUsedPlayers(teamId){let people=new Map(),aliases=new Map((db.personMerges||[]).map(m=>[m.fromId,m.toId])),venue=$('#venue').value;for(let m of matches()){if(![m.homeTeamId,m.awayTeamId].includes(teamId)||(venue==='home'&&m.homeTeamId!==teamId)||(venue==='away'&&m.awayTeamId!==teamId))continue;for(let a of m.appearances||[]){if(a.teamId!==teamId||a.played!==true||!['player','keeper'].includes(a.role))continue;let id=a.personId,seen=new Set();while(aliases.has(id)&&!seen.has(id)){seen.add(id);id=aliases.get(id)}let p=db.people.find(p=>p.id===id);if(!p)continue;let canonical=p.canonicalPersonId||p.personIdentityId||id,row=people.get(canonical);if(!row){row={id:p.id,name:p.name,matches:new Set(),roles:new Set()};people.set(canonical,row)}row.matches.add(m.id);row.roles.add(a.role)}}return [...people.values()].sort((a,b)=>a.name.localeCompare(b.name,'de'))}
+function teamPlayersTile(teamId){let count=teamUsedPlayers(teamId).length;return `<div class="club-detail-grid stat-tiles"><button type="button" class="team-players-tile" id="teamPlayersDetail" data-team-id="${esc(teamId)}"><small>Eingesetzte Spieler</small><strong>${count}</strong></button></div>`}
+function showTeamPlayers(teamId){let team=seasonTeams().find(t=>t.id===teamId),players=teamUsedPlayers(teamId);$('#dialog').close();show((team?.name||'Mannschaft')+' · Eingesetzte Spieler',`<p class="detail-context">${esc(seasonLabel())} · ${esc(competitionLabel())}</p><p>${players.length} eingesetzte Spieler und Torhüter aus dokumentierten Einzelspielen. Die aktuelle Zeitraum- und Heim-/Auswärtsauswahl gilt auch hier. Reine Summenwerte ohne Spielerkader können diese Liste nicht vervollständigen.</p>${players.map(p=>`<button class="game team-used-player" data-team-player="${esc(p.id)}"><strong>${esc(p.name)}</strong><small>${p.matches.size} Einsätze · ${p.roles.has('keeper')?'Torhüter'+(p.roles.has('player')?' / Feldspieler':''):'Feldspieler'}</small></button>`).join('')||'<p>Für diese Auswahl sind keine persönlichen Spielereinsätze dokumentiert.</p>'}<button type="button" id="backToTeam">Zurück zur Mannschaft</button>`);document.querySelectorAll('[data-team-player]').forEach(b=>b.onclick=()=>{$('#dialog').close();profile(b.dataset.teamPlayer)});$('#backToTeam').onclick=()=>{$('#dialog').close();profile(teamId)}}
+function profile(id){let e=[...seasonTeams(),...seasonPeople()].find(e=>e.id===id);if(!e)return;let isTeam=seasonTeams().some(t=>t.id===id),role=isTeam?'teams':e.role,prior=tab;tab=role;let totals=stats(e),tiles=summaryTiles(totals,role,id);tab=prior;let rows=(isTeam?resultMatches():matches()).filter(m=>isTeam?[m.homeTeamId,m.awayTeamId].includes(id):(m.appearances||[]).some(p=>p.personId===id&&p.role===e.role&&regionTeam(p.teamId))),groups=teamBreakdown(e);let body=`<p class="detail-context">${esc(seasonLabel())} · ${esc(competitionLabel())}</p>`+tiles;
+if(isTeam){body+='<h3>Heim- und Auswärtsbilanz · erfasste Spiele</h3>';for(let [side,g] of Object.entries(resultSplit(id)))body+=`<h4>${side==='home'?'Heim':'Auswärts'}</h4>`+detailTiles([['Spiele',g.played],['Punkte',g.points],['Siege',g.wins],['Unentschieden',g.draws],['Niederlagen',g.losses],['Tore',g.gf+':'+g.ga]])}
+else{body+='<h3>Einsätze nach Mannschaft · erfasste Spiele</h3>';for(let [tid,g]of Object.entries(groups)){body+=`<h4>${esc(seasonTeams().find(t=>t.id===tid)?.name||tid)}</h4>`;body+=e.role==='coach'?detailTiles([['Einsätze',g.played],['Punkte',g.points],['Siege',g.wins],['Unentschieden',g.draws],['Niederlagen',g.losses],['Tore',g.gf+':'+g.ga]]):detailTiles([['Einsätze',g.played,g.matchIds],['Tore',g.goals],['Eigentore (belegt)',g.ownGoals],['Kapitän (belegt)',g.captainKnown?g.captain:'Nicht erfasst']]);if(e.role!=='coach')body+=`<small>Trikotnummern: ${esc([...g.numbers].join(', ')||'Nicht erfasst')}</small>`}}
+if(allTime()){body+='<h3>Nach Saison</h3>'+db.seasons.filter(season=>e.seasons?.[season.id]).map(season=>withinSeason(season.id,()=>{let previous=tab;tab=role;try{return '<h4>'+esc(season.id)+'</h4>'+summaryTiles(stats(e),role,id)}finally{tab=previous}})).join('')}
+body+='<h3>Einzelne Spiele</h3>'+ (rows.map(m=>`<button class="game" data-game="${esc(m.id)}">${esc(gameLabel(m))}${isTeam?`<small>${m.homeTeamId===id?'Heimspiel':'Auswärtsspiel'} · ${isAwarded(m)?'Nicht ausgetragen; ohne Tore und persönliche Einsätze':m.teamCards?.[id]?esc(`Gelb ${m.teamCards[id].yellow} · Gelb-Rot ${m.teamCards[id].yellowRed} · Rot ${m.teamCards[id].red}`):'Karten nicht erfasst'}</small>`:(m.appearances||[]).filter(p=>p.personId===id&&p.role===e.role&&regionTeam(p.teamId)).map(p=>`<small>${esc(seasonTeams().find(t=>t.id===p.teamId)?.name||p.teamId)} · ${e.role==='coach'?'Trainer':`Nr. ${esc(p.shirtNumber??'–')}`} · ${p.played?(e.role==='coach'?'Trainereinsatz':p.started===true?'Startelf':p.started===false?'Eingewechselt':'Einsatz'):'ohne Einsatz'}${e.role==='coach'?'':` · ${n(p.goals)} Tore · ${Number.isInteger(p.assists)?p.assists+' Vorlagen':'Vorlagen nicht erfasst'} · ${appearanceOwnGoals(m,p)} Eigentore · ${p.captain===true?'Kapitän':p.captain===false?'kein Kapitän':'Kapitän nicht erfasst'}`}</small>`).join('')}</button>`).join('')||'<p>Noch keine einzelnen Spiele verknüpft.</p>');show(e.name,(isTeam?abbreviationBadge(e.shortName):personAbbreviations(e))+body);if(isTeam)document.querySelectorAll('[data-team-players]').forEach(b=>b.onclick=()=>withinSeason(b.dataset.playerSeason,()=>showTeamPlayers(b.dataset.teamPlayers)));bindGames()}
+function bindGames(){document.querySelectorAll('[data-recap-games]').forEach(b=>b.onclick=()=>{let ids=new Set(JSON.parse(b.dataset.recapGames)),games=db.matches.filter(m=>ids.has(m.id)).sort((a,b)=>b.date.localeCompare(a.date));show('Kreisvergleich · Zugehörige Spiele',`<p>${games.length} Begegnungen für die gewählte Einsatzzahl. Die aktuelle Saison-, Zeitraum- und Wettbewerbsauswahl ist berücksichtigt.</p>${games.map(m=>`<button class="game" data-game="${esc(m.id)}">${esc(gameLabel(m))}</button>`).join('')}`);bindGames()});document.querySelectorAll('[data-game]').forEach(b=>b.onclick=()=>{let m=db.matches.find(m=>m.id===b.dataset.game);$('#dialog').close();if(isAwarded(m)){show(gameLabel(m),`<p>${esc(awardLabel(m))}. Ein Sieg und eine Niederlage in der Mannschaftsbilanz; keine sportlichen Tore oder persönlichen Einsätze.</p><p>${esc(officialAwardText(m))}</p>`);return}show(gameLabel(m),`<p>Spiel-ID: ${esc(m.id)}</p><p>Schiedsrichter: ${esc(seasonPeople().find(p=>p.id===m.refereeId&&['referee','refereeAssistant'].includes(p.role))?.name||m.referee||'Nicht erfasst')}</p>${(m.assistantReferees||[]).map(a=>`<p>${a.position}. Assistent: ${esc(seasonPeople().find(p=>p.id===a.personId)?.name||a.name)}</p>`).join('')}<pre>${esc(JSON.stringify(m,null,2))}</pre>`)})}
+function recapStats(ms){ms=ms.filter(m=>m.status==='played');let blank=()=>({played:0,wins:0,draws:0,losses:0,gf:0,ga:0,points:0}),overall=blank(),external=blank(),internal=0,groups=new Map(),seen=new Set();function add(out,gf,ga,result){out.played++;out.gf+=gf;out.ga+=ga;out.wins+=result===1;out.draws+=result===0;out.losses+=result===-1;out.points+=result===1?3:result===0?1:0}for(let m of ms){if(seen.has(m.id))continue;seen.add(m.id);let project=seasonTeams().filter(t=>t.project!==false&&[m.homeTeamId,m.awayTeamId].includes(t.id)),selected=project.filter(t=>teamMatchesCategory(t));for(let t of selected){let h=t.id===m.homeTeamId;add(overall,h?m.homeGoals:m.awayGoals,h?m.awayGoals:m.homeGoals,matchOutcome(m,t.id))}if(project.length===2){internal++;continue}if(selected.length!==1)continue;let h=selected[0].id===m.homeTeamId,gf=h?m.homeGoals:m.awayGoals,ga=h?m.awayGoals:m.homeGoals,opponent=seasonTeams().find(t=>t.id===(h?m.awayTeamId:m.homeTeamId)),district=opponent?.district?.trim()||opponent?.association?.trim()||'Noch nicht zugeordnet';add(external,gf,ga,matchOutcome(m,selected[0].id));if(!groups.has(district))groups.set(district,blank());add(groups.get(district),gf,ga,matchOutcome(m,selected[0].id));let group=groups.get(district);(group.matchIds??=[]).push(m.id)}return {encounters:seen.size,internal,overall,external,groups:[...groups.entries()].sort((a,b)=>b[1].played-a[1].played||(b[1].gf-b[1].ga)-(a[1].gf-a[1].ga))}}
+function recapTable(rows){return `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;text-align:left"><thead><tr>${['Bereich','Spiele / Einsätze','S','U','N','Tore','Diff.','Punkte','P./Spiel'].map(v=>`<th style="padding:8px;white-space:nowrap">${v}</th>`).join('')}</tr></thead><tbody>${rows.map(([label,g])=>`<tr><th style="padding:8px">${esc(label)}</th>${[g.played,g.wins,g.draws,g.losses,g.gf+':'+g.ga,g.gf-g.ga,g.points,fmt(g.points/g.played)].map(v=>`<td style="padding:8px;white-space:nowrap">${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
+function recapKpis(items){return '<div class="recap-kpis">'+items.map(([label,value,matchIds])=>matchIds?`<button type="button" class="recap-appearances" data-recap-games="${esc(JSON.stringify(matchIds))}" aria-label="${esc(value)} Einsätze: zugehörige Spiele anzeigen"><small>${esc(label)}</small><strong>${esc(value)}</strong></button>`:`<div><small>${esc(label)}</small><strong>${esc(value)}</strong></div>`).join('')+'</div>'}
+function recapBalance(label,g){let count=g.wins+g.draws+g.losses;return `<article class="recap-panel"><h3>${esc(label)}</h3><div class="recap-results"><div><strong>${g.wins}</strong><small>Siege</small></div><div><strong>${g.draws}</strong><small>Unentschieden</small></div><div><strong>${g.losses}</strong><small>Niederlagen</small></div></div><div class="recap-bar" aria-hidden="true">${count?[['win',g.wins],['draw',g.draws],['loss',g.losses]].filter(([,v])=>v).map(([type,v])=>`<span class="${type}" style="flex:${v}"></span>`).join(''):''}</div>${recapKpis([['Einsätze',g.played,g.matchIds],['Tore',g.gf+':'+g.ga],['Tordifferenz',(g.gf-g.ga>0?'+':'')+(g.gf-g.ga)],['Punkte',g.points],['Punkte / Spiel',decimalValue(g.points/g.played)],['Siegquote',count?percentValue(100*g.wins/count)+' %':'–']])}</article>`}
+
+// ReCap v0.70: Alle vier Listen benutzen exakt die vom ReCap gefilterten Spiele.
+// Mannschaftsstatistiken zaehlen beteiligte Projektteams; Spielstatistiken
+// zaehlen eine Begegnung auch bei internen und kreisuebergreifenden Duellen nur einmal.
+function recapHighlightData(ms){
+  const eligible=new Map(seasonTeams().filter(t=>t.project!==false&&teamMatchesCategory(t)).map(t=>[t.id,t]));
+  const seen=new Set(),offense=new Map(),draws=[],goalGames=[],cleanWins=[];
+  const textTeam=id=>eligible.get(id)?.name||db.teams.find(t=>t.id===id)?.name||'Unbekannte Mannschaft';
+  for(const m of ms){
+    if(m.status!=='played'||!Number.isInteger(m.homeGoals)||!Number.isInteger(m.awayGoals)||m.homeGoals<0||m.awayGoals<0)continue;
+    const ownSides=[m.homeTeamId,m.awayTeamId].filter(id=>eligible.has(id)&&teamMatchesCategory(matchTeam(id,m)));
+    if(!ownSides.length)continue;
+    // In der Gesamtansicht nicht versehentlich doppelt erfasste Paarungen doppelt zaehlen.
+    const fixtureKey=[m.season||'',m.date||'',m.homeTeamId,m.awayTeamId,matchCompetitionId(m)].join('|');
+    if(seen.has(fixtureKey))continue;
+    seen.add(fixtureKey);
+    const home=m.homeName||textTeam(m.homeTeamId),away=m.awayName||textTeam(m.awayTeamId);
+    const date=m.date?m.date.split('-').reverse().join('.'):'';
+    const game={name:home+' – '+away,date,dateISO:m.date,score:m.homeGoals+':'+m.awayGoals,total:m.homeGoals+m.awayGoals,homeGoals:m.homeGoals,awayGoals:m.awayGoals,id:m.id};
+    goalGames.push(game);
+    // Auch ein erfasstes 0:0 ist ein Remis; entschiedenes Elfmeterschiessen dagegen nicht.
+    if(m.homeGoals===m.awayGoals&&!(m.decision==='penalty_shootout'&&m.winnerTeamId))draws.push(game);
+    for(const id of ownSides){
+      const isHome=id===m.homeTeamId,gf=isHome?m.homeGoals:m.awayGoals,ga=isHome?m.awayGoals:m.homeGoals;
+      const own=offense.get(id)||{name:eligible.get(id).name,goals:0,played:0};
+      own.goals+=gf;own.played++;offense.set(id,own);
+      // Keine Verwaltungswertungen oder 0:0 mit Elfmeterentscheidung als Zu-Null-Sieg ausgeben.
+      if(gf>0&&ga===0&&matchOutcome(m,id)===1)cleanWins.push({...game,winner:eligible.get(id).name,margin:gf});
+    }
+  }
+  const byName=(a,b)=>a.name.localeCompare(b.name,'de');
+  const gameTie=(a,b)=>b.dateISO.localeCompare(a.dateISO)||byName(a,b);
+  return {
+    offense:[...offense.values()].sort((a,b)=>b.goals-a.goals||byName(a,b)),
+    draws:draws.sort((a,b)=>b.total-a.total||gameTie(a,b)),
+    goalGames:goalGames.sort((a,b)=>b.total-a.total||gameTie(a,b)),
+    cleanWins:cleanWins.sort((a,b)=>b.margin-a.margin||gameTie(a,b))
+  };
+}
+function recapHighlightAccordion(title,icon,entries,kind){
+  const countLabel=kind==='offense'?(entries.length===1?'Team':'Teams'):(entries.length===1?'Spiel':'Spiele');
+  const empty=kind==='offense'?'Keine Kreismannschaften mit erfassten Spielen in dieser Auswahl.':'Keine passenden Begegnungen im ausgewählten Zeitraum.';
+  const rows=entries.map((item,index)=>{
+    const isOffense=kind==='offense',isClean=kind==='clean';
+    const rank=index+1;
+    const subtitle=isOffense?item.played+' erfasste '+(item.played===1?'Partie':'Partien'):item.date+(isClean?' · Zu-Null-Sieg: '+item.winner:'');
+    const mainText=item.name;
+    const figure=isOffense?String(item.goals):item.score;
+    const unit=isOffense?(item.goals===1?'Tor':'Tore'):item.total+' '+(item.total===1?'Tor':'Tore')+' insgesamt';
+    return `<div class="recap-highlight-row"><span class="recap-highlight-rank">${rank}.</span><span class="recap-highlight-main"><strong>${esc(mainText)}</strong><small>${esc(subtitle)}</small></span><span class="recap-highlight-number">${esc(figure)}<small>${esc(unit)}</small></span></div>`;
+  }).join('');
+  return `<details class="recap-highlight"><summary><span class="recap-highlight-icon" aria-hidden="true">${icon}</span><span class="recap-highlight-label">${esc(title)}</span><span class="recap-highlight-count">${entries.length} ${countLabel}</span><span class="recap-highlight-chevron" aria-hidden="true">›</span></summary>${entries.length?`<div class="recap-highlight-rows">${rows}</div>`:`<div class="recap-highlight-empty">${empty}</div>`}</details>`;
+}
+function recapHighlights(ms){
+  const r=recapHighlightData(ms);
+  return `<section class="recap-highlights"><h3 class="recap-highlights-heading">Einzelstatistiken zum ReCap</h3><p class="recap-highlights-description">Nur die ausgewählten Kreismannschaften und dokumentierten Spiele im eingestellten Zeitraum. Die Listen sind nach Toranzahl absteigend sortiert.</p>`+
+    recapHighlightAccordion('Offensivstärkste Mannschaften','⚽',r.offense,'offense')+
+    recapHighlightAccordion('Höchste Remis','=',r.draws,'draws')+
+    recapHighlightAccordion('Torreichste Spiele','▥',r.goalGames,'games')+
+    recapHighlightAccordion('Zu-Null-Siege','✓',r.cleanWins,'clean')+
+    '</section>';
+}
+
+function recapOverview(ms){let awards=ms.filter(isAwarded),r=recapStats(ms),period=$('#period').value,label=period==='custom'?$('#from').value+' bis '+$('#to').value:period==='season'?seasonLabel():new Date(period+'-01T12:00:00').toLocaleDateString('de-DE',{month:'long',year:'numeric'});return `<div class="recap-view"><header class="recap-heading"><span class="recap-eyebrow">DEIN FUSSBALL IM ÜBERBLICK</span><h2>ReCap</h2><p>${esc(label)}</p><div class="recap-tags"><span>${esc(categoryLabels[gender])}</span><span>${esc(competitionLabel())}</span>${$('#ageClass').value?`<span>${esc($('#ageClass').value)}</span>`:''}</div></header>${recapKpis([['Begegnungen',r.encounters],['Mannschaftseinsätze',r.overall.played],['Interne Duelle',r.internal],['Verwaltungswertungen',awards.length]])}<div class="recap-balances">${recapBalance('Gesamtbilanz',r.overall)}${recapBalance('Gegen externe Gegner',r.external)}</div><section class="recap-districts"><h3>Kreisvergleich</h3><p class="recap-caption">Bilanz nach Gegnerkreis oder Verband</p>${r.groups.length?'<div class="recap-district-grid">'+r.groups.map(([name,g])=>recapBalance(name,g)).join('')+'</div>':'<div class="recap-no-data">Für diese Auswahl sind keine Spiele gegen externe Gegner erfasst.</div>'}</section>${recapHighlights(ms)}<details class="recap-method"><summary>So werden die Werte gezählt</summary><p>Die Übersicht nutzt einzeln erfasste Spiele. Interne Duelle zählen als eine Begegnung und als zwei Mannschaftseinsätze. Der Kreisvergleich enthält nur Spiele gegen externe Gegner. Verwaltungswertungen werden separat ausgewiesen; ihre Punkte und Ergebnisse stehen in der Mannschaftsrangliste. Start- und Enddatum sind eingeschlossen.</p>${r.groups.some(([name])=>name==='Noch nicht zugeordnet')?'<p>Gegner ohne hinterlegte Kreiszuordnung stehen unter „Noch nicht zugeordnet“ und sind in der externen Gesamtbilanz enthalten.</p>':''}</details></div>`}
+function renderGames(){let ms=resultMatches().filter(m=>[m.homeTeamId,m.awayTeamId].some(id=>seasonTeams().some(t=>t.id===id&&teamMatchesCategory(matchTeam(t.id,m))&&t.project!==false))),isRecap=tab==='recap';let games=[...ms].sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<button class="game" data-game="${esc(m.id)}">${esc(gameLabel(m))}${isRecap?'':`<small>${esc(m.id)}${!counted(m)?' · im Altbestand enthalten':''}</small>`}</button>`).join('');$('#content').innerHTML=isRecap?recapOverview(ms)+`<details class="recap-game-list"><summary>Begegnungen ansehen <span>${ms.length}</span></summary>${games||'<p>Keine Begegnungen für diese Auswahl.</p>'}</details>`:games+(ms.length?'':'<div class="empty">Noch keine Spiele für diesen Zeitraum.</div>');bindGames()}
+function validate(d){if(d.competitions!==undefined)validateCompetitionDefinitions(d.competitions);if(d.schemaVersion!==1)throw Error('Nicht unterstützte Datenversion.');for(let k of ['teams','people','matches'])if(!Array.isArray(d[k]))throw Error(k+' muss eine Liste sein.');let tids=new Set([...db.teams,...d.teams].map(t=>t.id)),pids=new Set([...db.people,...d.people].map(p=>p.id));for(let k of ['teams','people','matches']){let ids=new Set();for(let e of d[k]){if(typeof e.id!=='string'||!e.id||ids.has(e.id))throw Error('Fehlende oder doppelte ID in '+k);ids.add(e.id)}}for(let m of d.matches){if(!/^\d{4}-\d{2}-\d{2}$/.test(m.date)||!['played','postponed','cancelled','awarded'].includes(m.status)||!['league','cup','friendly'].includes(m.competitionType))throw Error('Datum, Status oder Wettbewerbsart fehlt: '+m.id);if(m.status==='awarded'){let sides=[m.homeTeamId,m.awayTeamId];if(!['non_attendance','administrative_decision'].includes(m.decision)||!m.homeTeamId||!m.awayTeamId||m.homeTeamId===m.awayTeamId||!sides.includes(m.winnerTeamId)||(m.decision==='non_attendance'&&(!sides.includes(m.nonAttendingTeamId)||m.winnerTeamId===m.nonAttendingTeamId))||(m.decision==='administrative_decision'&&m.nonAttendingTeamId!=null))throw Error('Ungültige administrative Entscheidung: '+m.id);if(m.officialAward!==undefined){let a=m.officialAward;if(!a||!Number.isInteger(a.homeGoals)||!Number.isInteger(a.awayGoals)||a.homeGoals<0||a.awayGoals<0||a.homeGoals===a.awayGoals||(a.homeGoals>a.awayGoals?m.homeTeamId:m.awayTeamId)!==m.winnerTeamId)throw Error('Ungültige offizielle Wertung: '+m.id)}if(m.homeGoals!=null||m.awayGoals!=null||m.halfTimeHomeGoals!=null||m.halfTimeAwayGoals!=null)throw Error('Administrative Entscheidung darf keine sportlichen Tore enthalten: '+m.id);if((m.appearances||[]).length||(m.anonymousAppearances||[]).length||(m.unresolvedAppearances||[]).length||(m.events||[]).length||m.refereeId||m.referee||(m.assistantReferees||[]).length||Object.keys(m.teamCards||{}).length)throw Error('Administrative Entscheidung darf keine Einsätze, Ereignisse oder Karten enthalten: '+m.id)}let registry=new Map([...(db.competitions||[]),...(d.competitions||[])].map(c=>[c.id,c]));let compId=matchCompetitionId(m),comp=compId&&registry.get(compId);if(m.cupCategory!==undefined&&(m.competitionType!=='cup'||typeof m.cupCategory!=='string'))throw Error('Ungültige Pokalzuordnung: '+m.id);if(m.competitionId!==undefined&&(typeof m.competitionId!=='string'||!m.competitionId))throw Error('Ungültige Wettbewerbs-ID: '+m.id);if(m.competitionType!=='friendly'&&(!comp||comp.type!==m.competitionType))throw Error('Unbekannter oder falsch typisierter Wettbewerb: '+m.id+' / '+(compId||'?'));if(m.competitionType==='friendly'&&m.competitionId!==undefined)throw Error('Freundschaftsspiele können keine Liga- oder Pokal-ID haben: '+m.id);if(m.status==='played'&&(!Number.isInteger(m.homeGoals)||!Number.isInteger(m.awayGoals)||m.homeGoals<0||m.awayGoals<0))throw Error('Ungültiger Endstand: '+m.id);for(let id of [m.homeTeamId,m.awayTeamId])if(id&&!tids.has(id))throw Error('Unbekannte Mannschaft: '+id);if(m.teamCards!==undefined){if(!m.teamCards||typeof m.teamCards!=='object'||Array.isArray(m.teamCards))throw Error('Ungültige Mannschaftskarten: '+m.id);for(let [id,c] of Object.entries(m.teamCards)){if(![m.homeTeamId,m.awayTeamId].includes(id))throw Error('Karten für unbeteiligte Mannschaft: '+m.id);if(!c||['yellow','yellowRed','red'].some(k=>!Number.isInteger(c[k])||c[k]<0))throw Error('Karten müssen vollständig als nichtnegative Ganzzahlen vorliegen: '+m.id)}}if(m.refereeId!==undefined&&m.refereeId!==null){let ref=[...d.people,...db.people].find(p=>p.id===m.refereeId&&['referee','refereeAssistant'].includes(p.role));if(!ref)throw Error('Unbekannte Schiedsrichter-ID: '+m.id)}if(m.assistantReferees!==undefined){if(!Array.isArray(m.assistantReferees))throw Error('Assistenten müssen eine Liste sein: '+m.id);let ids=new Set(m.refereeId?[m.refereeId]:[]),positions=new Set();for(let a of m.assistantReferees){let person=[...d.people,...db.people].find(p=>p.id===a.personId&&['referee','refereeAssistant'].includes(p.role));if(!person||![1,2].includes(a.position)||ids.has(a.personId)||positions.has(a.position))throw Error('Ungültige oder doppelte Assistentenzuordnung: '+m.id);ids.add(a.personId);positions.add(a.position)}}let captains=new Set();let seen=new Set();for(let p of m.appearances||[]){if(!pids.has(p.personId)||!tids.has(p.teamId)||!['player','coach','keeper'].includes(p.role)||typeof p.played!=='boolean')throw Error('Ungültige Personenverknüpfung: '+m.id);if(p.captain!==undefined&&typeof p.captain!=='boolean')throw Error('Kapitän muss true oder false sein: '+m.id);if(p.captain===true){if(p.role==='coach'||!p.played)throw Error('Kapitän braucht einen Spielereinsatz: '+m.id);if(captains.has(p.teamId))throw Error('Mehrere Aufstellungskapitäne derselben Mannschaft: '+m.id);captains.add(p.teamId)}let key=p.personId+'|'+p.role;if(seen.has(key))throw Error('Doppelter Einsatz: '+m.id);seen.add(key);if(p.role==='keeper'&&p.played&&(typeof p.cleanSheet!=='boolean'||!Number.isInteger(p.goalsAgainst)))throw Error('Torhüter braucht Gegentore und Zu-null-Angabe: '+m.id)}}}
+function downloadFile(name,contents,type){let a=document.createElement('a'),url=URL.createObjectURL(new Blob([contents],{type}));a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function snapshotHtml(data){data=persistableData(data);let html=originalHtml,close='<'+'/script>',payload=JSON.stringify(data).replace(/</g,'\\u003c');let begin=html.indexOf('<script id="seed" type="application/json">'),end=html.indexOf(close,begin);if(begin<0||end<0)throw Error('Startdaten nicht gefunden');let start=html.indexOf('>',begin)+1;html=html.slice(0,start)+payload+html.slice(end);let unique='amateurfussball-am-ball-file-'+Date.now()+'-'+Math.random().toString(36).slice(2);html=html.replace(/const databaseName='[^']*';/,"const databaseName='"+unique+"';");return '<!doctype html>'+html}
+function offerFileImport(next){show('Lokales Speichern nicht möglich',`<p>Die Daten wurden geprüft, aber noch nicht übernommen.</p><p>Du kannst stattdessen eine neue HTML-Datei mit dem zusammengeführten Datenbestand herunterladen. Öffne danach diese neue Datei. Dein bisheriger Bestand bleibt unverändert.</p><div class="actions"><button id="downloadImportedHtml">Aktualisierte HTML herunterladen</button><button id="downloadImportedJson">JSON mit Korrektur herunterladen</button></div><p id="fileImportStatus" role="status"></p><details><summary>Technischer Fehler</summary><p>${esc(storageError||'Unbekannter Speicherfehler')}</p></details>`);$('#downloadImportedHtml').onclick=()=>{try{if(activeAreaId!=='stormarn')throw Error('Für zusätzliche Datenbereiche bitte die JSON-Sicherung verwenden, damit die Bereiche getrennt bleiben.');downloadFile('Amateurfussball_am_Ball_Datenstand_'+new Date().toISOString().slice(0,10)+'.html',snapshotHtml(next),'text/html');$('#fileImportStatus').textContent='Download gestartet. Bitte die neue HTML-Datei öffnen. Der Download wurde hier nicht auf Vollständigkeit geprüft.'}catch(e){$('#fileImportStatus').textContent='Download konnte nicht gestartet werden: '+e.message}};$('#downloadImportedJson').onclick=()=>downloadFile(dataFilename('_mit_Korrektur',next),JSON.stringify(next,null,2),'application/json')}
+
+// Sammelimport v0.67. Format: {schemaVersion:2,format:'am-ball-fuenf-kreise-v1',
+//   districts:{stormarn:{schemaVersion:1,teams:[...],...},segeberg:{...}},
+//   crossMatches:[{id,date,season,competitionType,status,home:{areaId,teamId},away:{areaId,teamId},homeGoals,awayGoals}]}
+const MULTI_FORMAT='am-ball-fuenf-kreise-v1';
+function isMultiImport(raw){return raw?.format===MULTI_FORMAT}
+function matchAreas(m){return [m.home.areaId,m.away.areaId]}
+function validateCentralMatch(m,records){
+  if(!m||typeof m!=='object'||Array.isArray(m)||typeof m.id!=='string'||!m.id.trim()||m.id.length>240)throw Error('Kreisduell braucht eine eindeutige Spiel-ID.');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(m.date)||!validSeason(m.season||seasonOfDate(m.date))||seasonOfDate(m.date)!==(m.season||seasonOfDate(m.date)))throw Error('Ungültiges Datum oder Saison: '+m.id);
+  if(!['league','cup','friendly'].includes(m.competitionType)||!['played','postponed','cancelled','awarded'].includes(m.status))throw Error('Wettbewerb oder Status fehlt: '+m.id);
+  if(m.status==='played'&&(!Number.isInteger(m.homeGoals)||!Number.isInteger(m.awayGoals)||m.homeGoals<0||m.awayGoals<0))throw Error('Ungültiger Endstand: '+m.id);
+  for(let side of [m.home,m.away]){
+    if(!side||!areas.some(a=>a.id===side.areaId)||typeof side.teamId!=='string'||!side.teamId)throw Error('Kreis und Mannschaft müssen auf beiden Seiten gesetzt sein: '+m.id);
+    let team=localTeamIn(records[side.areaId],side);
+    if(!team||team.project===false)throw Error('Mannschaft '+side.teamId+' fehlt im Kreis '+side.areaId+'. Zuerst Mannschaftsdaten im selben Sammelimport ergänzen.');
+  }
+  if(m.home.areaId===m.away.areaId)throw Error('Spiele innerhalb desselben Kreises wie bisher dort importieren: '+m.id);
+  if(m.home.areaId===m.away.areaId&&m.home.teamId===m.away.teamId)throw Error('Heim und Gast identisch.');
+  if(m.appearances!==undefined&&!Array.isArray(m.appearances))throw Error('appearances muss eine Liste sein: '+m.id);
+  for(let a of m.appearances||[]){
+    if(![m.home,m.away].some(s=>s.areaId===a.areaId&&s.teamId===a.teamId))throw Error('Spielereinsatz ohne passende Kreis- und Teamzuordnung: '+m.id);
+    let d=records[a.areaId];if(!d.people.some(p=>p.id===a.personId))throw Error('Person fehlt in '+a.areaId+': '+a.personId+' ('+m.id+')');
+  }
+  if(m.events!==undefined&&!Array.isArray(m.events))throw Error('events muss eine Liste sein: '+m.id);
+  for(let ev of m.events||[]){if(ev.teamId&&(!ev.teamAreaId||![m.home,m.away].some(s=>s.areaId===ev.teamAreaId&&s.teamId===ev.teamId)))throw Error('Ereignis ohne eindeutige Kreis-Mannschaft: '+m.id);if(ev.personId&&(!ev.personAreaId||!records[ev.personAreaId]?.people.some(p=>p.id===ev.personId)))throw Error('Ereignis mit unklarer kreisübergreifender Personen-ID: '+m.id)}
+  if(m.teamCards!==undefined){for(let k of Object.keys(m.teamCards))if(!['home','away'].includes(k))throw Error('teamCards nur nach home und away zuordnen: '+m.id)}
+  if(m.refereeId&&(!m.refereeAreaId||!records[m.refereeAreaId]?.people.some(p=>p.id===m.refereeId)))throw Error('Schiedsrichter mit unklarer Kreis-ID: '+m.id);
+  if(m.status==='awarded'&&(!m.winner||!matchAreas(m).includes(m.winner.areaId)||![m.home,m.away].some(s=>s.areaId===m.winner.areaId&&s.teamId===m.winner.teamId)))throw Error('Administrative Entscheidung ohne gültigen Sieger: '+m.id);
+  for(let id of matchAreas(m)){
+    let temp=attachCrossView(records[id],id,[],records),p=projectedMatch(m,id,records);
+    let extern=externalTeamsFor(m,id,records)[0];temp.teams.push(extern);
+    let previous=db;try{db=temp;validate({schemaVersion:1,teams:[],people:[],matches:[p]});}finally{db=previous}
+  }
+}
+async function readAreaData(id){
+  if(id===activeAreaId)return persistableData(db);
+  const spec=areas.find(a=>a.id===id),store={...localStore,connection:null,queue:Promise.resolve()};
+  try{await store.open(spec.store);const found=await store.read();return normalizeData(found||emptyAreaData(spec.name));}
+  finally{store.connection?.close()}
+}
+async function writeAreaData(id,data){
+  if(id===activeAreaId){await localStore.write(persistableData(data));return}
+  const spec=areas.find(a=>a.id===id),store={...localStore,connection:null,queue:Promise.resolve()};
+  try{await store.open(spec.store);await store.write(persistableData(data));}
+  finally{store.connection?.close()}
+}
+async function buildMultiPreview(raw){
+  if(!storageReady||!sharedReady)throw Error('Die zentrale Speicherung ist hier nicht verfügbar. Bitte eine Browser-Umgebung mit IndexedDB verwenden.');
+  if(raw.schemaVersion!==2||!raw.districts||typeof raw.districts!=='object'||Array.isArray(raw.districts))throw Error('Mehrkreis-Import: Format oder districts fehlt.');
+  if(!Array.isArray(raw.crossMatches||[]))throw Error('crossMatches muss eine Liste sein.');
+  let entries=Object.entries(raw.districts);if(entries.some(([id])=>!areas.some(a=>a.id===id)))throw Error('Unbekannter Kreis in districts.');
+  let records={},before={};
+  for(let a of areas){records[a.id]=await readAreaData(a.id);before[a.id]=copyData(records[a.id]);}
+  const initialDb=db;
+  try{
+    for(let [areaId,input] of entries){
+      if(!input||input.schemaVersion!==1)throw Error('Kreisdaten für '+areaId+' müssen Datenversion 1 verwenden.');
+      const area=areas.find(a=>a.id===areaId),project=input.project||{name:area.name,district:area.name};
+      if(normalizedAreaName(project.district||project.name)!==normalizedAreaName(area.name))throw Error('Falsche Projektzuordnung in '+areaId);
+      db=records[areaId];
+      let prepared=prepareSeasonImport({...copyData(input),project});validateAbbreviations(prepared);validateColors(prepared);validateAssists(prepared);validate(prepared);
+      let next=mergeSeasonImport(prepared);validate(next);records[areaId]=persistableData(next);
+    }
+  }finally{db=initialDb}
+  let lookup=new Map(crossLedger.map(m=>[m.id,m]));let fresh=0,changed=0;let incoming=new Set();
+  for(let rawMatch of raw.crossMatches||[]){
+    let m=copyData(rawMatch);if(!m||typeof m.id!=='string')throw Error('Kreisduell ohne Spiel-ID.');
+    let prior=lookup.get(m.id);
+    let matchSameFixture=[...lookup.values()].find(other=>other.id!==m.id&&sameCentralFixture(other,m));
+    if(matchSameFixture)throw Error('Diese Begegnung ist bereits unter einer anderen zentralen ID gespeichert ('+matchSameFixture.id+'). Kein zweiter Import: '+m.id);
+    if(prior)m={...copyData(prior),...m,home:{...prior.home,...(m.home||{})},away:{...prior.away,...(m.away||{})}};
+    m.season??=seasonOfDate(m.date);
+    if(m.home&&records[m.home.areaId])m.home.name??=localTeamIn(records[m.home.areaId],m.home)?.name;
+    if(m.away&&records[m.away.areaId])m.away.name??=localTeamIn(records[m.away.areaId],m.away)?.name;
+    if(incoming.has(m.id))throw Error('Doppelte Spiel-ID in crossMatches: '+m.id);incoming.add(m.id);
+    if(prior){if(prior.home.areaId!==m.home.areaId||prior.away.areaId!==m.away.areaId||prior.home.teamId!==m.home.teamId||prior.away.teamId!==m.away.teamId||prior.season!==m.season)throw Error('Kreis oder Mannschaft darf bei einer bestehenden Spiel-ID nicht wechseln: '+m.id);
+      if(JSON.stringify(prior)!==JSON.stringify(m))changed++;
+    }else fresh++;
+    lookup.set(m.id,m);
+  }
+  const ledger=[...lookup.values()];
+  for(let m of ledger){
+    for(let areaId of matchAreas(m)){
+      if(records[areaId].matches.some(x=>x.id===m.id))throw Error('Spiel-ID wird schon als einzelnes Kreisspiel verwendet: '+m.id);
+      if(!records[areaId].seasons.some(s=>s.id===m.season))records[areaId].seasons.push({id:m.season});
+    }
+    validateCentralMatch(m,records);
+  }
+  let affected=new Set([...entries.map(([id])=>id),...ledger.filter(m=>incoming.has(m.id)).flatMap(matchAreas)]);
+  let localDuplicates=crossDuplicateSummary(ledger,records).filter(x=>incoming.has(x.centralId));
+  return {before,records,oldLedger:copyData(crossLedger),ledger,affected:[...affected],fresh,changed,localDuplicates,sourceArea:activeAreaId,teamAdditions:entries.reduce((sum,[id])=>sum+records[id].teams.filter(t=>!before[id].teams.some(x=>x.id===t.id)).length,0)};
+}
+async function commitMultiImport(plan){
+  if(scopeBusy||activeAreaId!==plan.sourceArea)throw Error('Die Kreisauswahl hat sich verändert. Bitte erneut importieren.');
+  scopeBusy=true;$('#districtJump').disabled=true;$('#import').disabled=true;
+  let written=[];
+  try{
+    for(let id of plan.affected){await writeAreaData(id,plan.records[id]);written.push(id)}
+    await sharedStore.write(copyData(plan.ledger),'matches');
+    crossLedger=plan.ledger;
+    db=attachCrossView(plan.records[activeAreaId],activeAreaId,crossLedger,plan.records);
+    syncAgeOptions();syncSeasonOptions();syncCompetitions();displayAreas();render();
+    $('#status').textContent='Mehrkreis-Import gespeichert: '+plan.fresh+' neue, '+plan.changed+' korrigierte zentrale Spiele. Die zugehörigen Kreisansichten sind aktualisiert.';
+  }catch(e){
+    let rollback=[];
+    for(let id of [...written].reverse())try{await writeAreaData(id,plan.before[id])}catch(err){rollback.push(id)}
+    try{await sharedStore.write(plan.oldLedger,'matches')}catch(err){rollback.push('Zentralregister')}
+    if(rollback.length)throw Error('Import fehlgeschlagen; Rücksicherung nicht vollständig ('+rollback.join(', ')+'). Bitte Gesamt-Backup prüfen. Grund: '+e.message);
+    throw Error('Import abgebrochen und zurückgesetzt: '+e.message);
+  }finally{scopeBusy=false;$('#import').disabled=false;$('#districtJump').disabled=false}
+}
+async function previewMultiImport(raw){
+  let plan=await buildMultiPreview(raw);
+  show('Kreisübergreifenden Import prüfen',`<p><strong>${plan.fresh} neue Kreisduelle</strong> · ${plan.changed} Korrekturen</p>${plan.localDuplicates.length?`<p><strong>Achtung: ${plan.localDuplicates.length} vorhandene lokale Spielberichte erkannt.</strong> Sie bleiben im Backup erhalten; die zentrale Fassung wird für die Statistik verwendet.</p>`:''}<p>${plan.teamAdditions} neue Mannschaften in den beteiligten Kreisen</p><p>${plan.affected.map(id=>esc(areas.find(a=>a.id===id)?.name)).join(' · ')}</p><p>Jede zentrale Begegnung liegt einmal im Register. Bereits vorhandene lokale Berichte derselben Begegnung bleiben im Backup erhalten, werden aber nicht doppelt gezählt. Identische IDs werden aktualisiert.</p><button id="commitMulti">Import für alle betroffenen Kreise übernehmen</button>`);
+  $('#commitMulti').onclick=async()=>{let b=$('#commitMulti');b.disabled=true;try{await commitMultiImport(plan);$('#dialog').close()}catch(e){alert(e.message);b.disabled=false}};
+}
+async function exportAllAreas(){
+  if(!sharedReady||!storageReady)throw Error('Für ein vollständiges Gesamt-Backup muss die lokale Datenbank verfügbar sein.');
+  let districts={};for(let a of areas)districts[a.id]=await readAreaData(a.id);
+  let packageData={schemaVersion:2,format:MULTI_FORMAT,exportedAt:new Date().toISOString(),districts,crossMatches:crossLedger};
+  downloadFile('Amateurfussball_am_Ball_5_Kreise_Gesamtbackup_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(packageData,null,2),'application/json');
+  $('#status').textContent='Gesamt-Backup heruntergeladen: fünf Kreise und alle zentralen Kreisduelle.';
+}
+
+$('#import').onchange=async ev=>{try{if(activeAreaId===ALL_VIEW_ID)throw Error('Bitte zuerst einen einzelnen Kreis wählen.');let raw=JSON.parse(await ev.target.files[0].text());if(isMultiImport(raw)){await previewMultiImport(raw);ev.target.value='';return}areaImportCheck(raw);let d=prepareSeasonImport(raw);validateAbbreviations(d);validateColors(d);validateAssists(d);for(let m of d.matches)for(let a of m.appearances||[])for(let alias of db.personMerges||[])if(a.personId===alias.fromId)a.personId=alias.toId;validate(d);let next=mergeSeasonImport(d);validate(next);let changed=d.matches.filter(m=>db.matches.some(o=>o.id===m.id&&JSON.stringify(o)!==JSON.stringify(m))).length,newCount=d.matches.filter(m=>!db.matches.some(o=>o.id===m.id)).length,newSeasons=d.seasons.filter(s=>!db.seasons.some(o=>o.id===s.id)),newClubs=d.clubs.filter(c=>!db.clubs.some(o=>o.id===c.id)),newTeams=d.teams.filter(t=>!db.teams.some(o=>o.id===t.id)),newCompetitions=(d.competitions||[]).filter(c=>!db.competitions.some(o=>o.id===c.id)),updatedCompetitions=(d.competitions||[]).filter(c=>db.competitions.some(o=>o.id===c.id&&(o.name!==c.name||o.active!==c.active)));show('Import prüfen',`<p>${newCount} neue Spiele · ${changed} geänderte Spiele</p><p>${newSeasons.length} neue Saisons · ${newClubs.length} neue Vereine · ${newTeams.length} neue Mannschaften</p><p>${newCompetitions.length} neue Wettbewerbe · ${updatedCompetitions.length} geänderte Wettbewerbe</p>${newSeasons.length?'<p>Neue Saison: '+newSeasons.map(s=>esc(s.id)).join(', ')+'</p>':''}<button id="commit">Import übernehmen</button>`);$('#commit').onclick=async()=>{let previous=db;$('#commit').disabled=true;next.imports.push({date:new Date().toISOString(),newCount,changed});db=next;if(!await save()){db=previous;offerFileImport(next);return}refreshCrossView();restoreImportedSettings();syncAgeOptions();syncSeasonOptions(newSeasons[0]?.id);syncCompetitions();$('#dialog').close();render()}}catch(e){alert('Import abgebrochen: '+e.message)}ev.target.value=''};
+$('#export').onclick=()=>{if(activeAreaId===ALL_VIEW_ID)return;let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(persistableData(db),null,2)],{type:'application/json'}));a.download=dataFilename();a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$('#exportAll').onclick=async()=>{let btn=$('#exportAll');btn.disabled=true;try{await exportAllAreas()}catch(e){alert('Gesamt-Backup fehlgeschlagen: '+e.message)}finally{btn.disabled=false}};
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;$('#sort').innerHTML='';render()});$('#gender').onchange=e=>{gender=e.target.value;$('#ageClass').value='';syncAgeOptions();render()};$('#ageClass').onchange=render;['period','from','to','sort','venue','region','direction'].forEach(id=>$('#'+id).onchange=render);$('#search').oninput=render;$('#close').onclick=()=>$('#dialog').close();$('#competition').onclick=e=>{let button=e.target.closest('button[data-competition],button[data-competition-preset]');if(!button)return;if(button.dataset.competition){let id=button.dataset.competition;setCompetitions(chosenCompetitions.includes(id)?chosenCompetitions.filter(k=>k!==id):[...chosenCompetitions,id]);return}let mode=button.dataset.competitionPreset;setCompetitions(competitionDefinitions().filter(c=>mode==='all'||c.type===(mode==='cups'?'cup':'league')).map(c=>c.id))};function minimumThreshold(){let v=Number($('#minimumCount').value);return $('#minimumCount').value.trim()!==''&&Number.isSafeInteger(v)&&v>=0?v:minimumSettings.count}
+let minimumSettings={enabled:true,count:3};try{let v=JSON.parse(localStorage.getItem('am-ball-project59-minimum-v1')||'null')||db.uiSettings?.minimum;if(v&&typeof v.enabled==='boolean'&&Number.isSafeInteger(v.count)&&v.count>=0)minimumSettings=v}catch(e){}
+$('#minimum').checked=minimumSettings.enabled;$('#minimumCount').value=String(minimumSettings.count);
+function rememberMinimum(){let v=Number($('#minimumCount').value);if($('#minimumCount').value.trim()===''||!Number.isSafeInteger(v)||v<0){$('#minimumCount').value=String(minimumSettings.count);return}minimumSettings={enabled:$('#minimum').checked,count:v};db.uiSettings??={};db.uiSettings.minimum={...minimumSettings};try{localStorage.setItem('am-ball-project59-minimum-v1',JSON.stringify(minimumSettings))}catch(e){}save();render()}
+let detailedEnabled=true;try{let stored=JSON.parse(localStorage.getItem('am-ball-project59-detailed-v1')||'null');if(typeof stored==='boolean')detailedEnabled=stored;else if(typeof db.uiSettings?.detailed==='boolean')detailedEnabled=db.uiSettings.detailed}catch(e){}
+function restoreImportedSettings(){let u=db.uiSettings||{};if(u.minimum){minimumSettings={...u.minimum};$('#minimum').checked=minimumSettings.enabled;$('#minimumCount').value=String(minimumSettings.count);try{localStorage.setItem('am-ball-project59-minimum-v1',JSON.stringify(minimumSettings))}catch(e){}}if(typeof u.detailed==='boolean'){detailedEnabled=u.detailed;try{localStorage.setItem('am-ball-project59-detailed-v1',JSON.stringify(detailedEnabled))}catch(e){}}}
+function syncDetailed(){$('#content').classList.toggle('compact-rankings',!detailedEnabled);$('#detailed').textContent=detailedEnabled?'Detailliert ✓':'Detailliert';$('#detailed').setAttribute?.('aria-pressed',String(detailedEnabled));$('#rankingOptions').hidden=['archive','recap'].includes(tab)}
+$('#detailed').onclick=()=>{detailedEnabled=!detailedEnabled;db.uiSettings??={};db.uiSettings.detailed=detailedEnabled;try{localStorage.setItem('am-ball-project59-detailed-v1',JSON.stringify(detailedEnabled))}catch(e){}save();render()};
+$('#minimum').onchange=rememberMinimum;$('#minimumCount').onchange=rememberMinimum;
+if(storageReady)$('#status').textContent=db.matches.length||db.people.length||db.teams.length?'Lokaler Datenbestand geladen.':'Leere Datenbank bereit · ersten JSON-Datenbestand importieren.';syncAgeOptions();syncSeasonOptions();$('#season').onchange=()=>{syncPeriodOptions();render()};syncCompetitions();render();
+})().catch(e=>{document.querySelector('#status').textContent='Start fehlgeschlagen: '+e.message});</script></html>
