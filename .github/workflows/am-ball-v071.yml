@@ -15,11 +15,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Android SDK nutzen
+      - name: Android SDK benutzen
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
-          yes | sdkmanager --licenses >/dev/null || true
-      - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+          SDKMGR=$(find "$ANDROID_HOME/cmdline-tools" -name sdkmanager -type f | head -n 1)
+          if [ -z "$SDKMGR" ]; then echo "sdkmanager fehlt"; exit 1; fi
+          yes | "$SDKMGR" --licenses >/dev/null || true
+          "$SDKMGR" 'platforms;android-35' 'build-tools;35.0.0'
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
