@@ -1,0 +1,28 @@
+name: Android APK bauen
+on:
+  workflow_dispatch:
+  push:
+    branches: [am-ball-android-build-v071]
+
+jobs:
+  android-apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - run: cd am-ball-v071 && gradle :app:assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Amateurfussball_am_Ball_v071_APK
+          path: am-ball-v071/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
