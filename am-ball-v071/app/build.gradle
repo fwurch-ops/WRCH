@@ -1,0 +1,30 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'de.stormarnamball.statistik'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'de.stormarnamball.statistik'
+        minSdk 26
+        targetSdk 34
+        versionCode 71
+        versionName '0.71'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.13.0'
+}
